@@ -1,0 +1,1863 @@
+/* ========================================
+
+   NALA ACCESORIOS - ESTILOS GENERALES
+
+======================================== */
+
+
+
+:root {
+
+    --negro: #111111;
+
+    --negro-puro: #000000;
+
+    --dorado: #D4AF37;
+
+    --dorado-oscuro: #B89635;
+
+    --blanco: #FFFFFF;
+
+    --gris: #777777;
+
+    --gris-claro: #EEEEEE;
+
+    --fondo: #FAFAFA;
+
+    --radio: 10px;
+
+    --sombra: 0 5px 20px rgba(0, 0, 0, 0.07);
+
+}
+
+
+
+* {
+
+    box-sizing: border-box;
+
+}
+
+
+
+html {
+
+    scroll-behavior: smooth;
+
+    scroll-padding-top: 20px;
+
+}
+
+
+
+body {
+
+    margin: 0;
+
+    font-family: Arial, Helvetica, sans-serif;
+
+    color: #222222;
+
+    background: var(--blanco);
+
+    line-height: 1.5;
+
+}
+
+
+
+img,
+
+video {
+
+    max-width: 100%;
+
+}
+
+
+
+a {
+
+    -webkit-tap-highlight-color: transparent;
+
+}
+
+
+
+button {
+
+    font-family: inherit;
+
+}
+
+
+
+/* ========================================
+
+   BARRA SUPERIOR
+
+======================================== */
+
+
+
+.barra-superior {
+
+    background: var(--negro-puro);
+
+    color: var(--dorado);
+
+    text-align: center;
+
+    padding: 12px 15px;
+
+    font-size: 13px;
+
+    letter-spacing: 0.5px;
+
+    border-bottom: 1px solid var(--dorado);
+
+}
+
+
+
+/* ========================================
+
+   ENCABEZADO Y LOGO
+
+======================================== */
+
+
+
+.encabezado {
+
+    display: flex;
+
+    align-items: center;
+
+    justify-content: space-between;
+
+    gap: 25px;
+
+    padding: 15px 7%;
+
+    min-height: 95px;
+
+    background: var(--blanco);
+
+}
+
+
+
+.logo {
+
+    display: flex;
+
+    flex-direction: column;
+
+    align-items: center;
+
+    justify-content: center;
+
+    min-width: 100px;
+
+    text-decoration: none;
+
+    color: var(--dorado-oscuro);
+
+    line-height: 1;
+
+}
+
+
+
+.logo span {
+
+    font-size: 32px;
+
+    font-weight: 900;
+
+    letter-spacing: 4px;
+
+}
+
+
+
+.logo small {
+
+    margin-top: 6px;
+
+    font-size: 9px;
+
+    letter-spacing: 3px;
+
+}
+
+
+
+/* ========================================
+
+   MENÚ DE NAVEGACIÓN
+
+======================================== */
+
+
+
+.menu {
+
+    display: flex;
+
+    align-items: center;
+
+    gap: 32px;
+
+}
+
+
+
+.menu a {
+
+    position: relative;
+
+    text-decoration: none;
+
+    color: #222222;
+
+    font-size: 14px;
+
+    transition: color 0.2s ease;
+
+}
+
+
+
+.menu a:hover {
+
+    color: var(--dorado-oscuro);
+
+}
+
+
+
+/* ========================================
+
+   PORTADA PRINCIPAL
+
+======================================== */
+
+
+
+.portada {
+
+    width: calc(100% - 40px);
+
+    max-width: 1100px;
+
+    min-height: 420px;
+
+    margin: 0 auto;
+
+    padding: 50px;
+
+    display: flex;
+
+    align-items: center;
+
+    background:
+
+        linear-gradient(
+
+            90deg,
+
+            rgba(0, 0, 0, 0.78),
+
+            rgba(0, 0, 0, 0.08)
+
+        ),
+
+        url("Img/Inicio.png") center / cover no-repeat;
+
+    border-radius: 3px;
+
+}
+
+
+
+.portada-texto {
+
+    max-width: 480px;
+
+    color: var(--blanco);
+
+}
+
+
+
+.portada-texto p {
+
+    color: var(--dorado);
+
+    letter-spacing: 4px;
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+}
+
+
+
+.portada-texto h1 {
+
+    font-size: clamp(30px, 4vw, 48px);
+
+    line-height: 1.15;
+
+    margin: 15px 0 25px;
+
+}
+
+
+
+/* Botones dorados */
+
+
+
+.boton-dorado,
+
+.boton-producto {
+
+    display: inline-block;
+
+    background: var(--dorado);
+
+    color: var(--negro);
+
+    padding: 13px 23px;
+
+    text-decoration: none;
+
+    font-weight: bold;
+
+    border: 1px solid var(--dorado);
+
+    border-radius: 4px;
+
+    transition:
+
+        background 0.2s ease,
+
+        transform 0.2s ease;
+
+}
+
+
+
+.boton-dorado:hover,
+
+.boton-producto:hover {
+
+    background: #E6C75A;
+
+    transform: translateY(-2px);
+
+}
+
+
+
+/* ========================================
+
+   SECCIÓN DE CATEGORÍAS Y CATÁLOGO
+
+======================================== */
+
+
+
+.seccion-categorias {
+
+    max-width: 1150px;
+
+    margin: 55px auto;
+
+    padding: 0 22px;
+
+    text-align: center;
+
+}
+
+
+
+.seccion-categorias h2 {
+
+    font-size: clamp(23px, 3vw, 30px);
+
+    margin: 0 0 10px;
+
+    color: var(--negro);
+
+}
+
+
+
+.subtitulo {
+
+    color: var(--gris);
+
+    margin: 0 0 30px;
+
+}
+
+
+
+/* Cuadrícula de productos */
+
+
+
+.categorias {
+
+    display: grid;
+
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+
+    gap: 22px;
+
+    text-align: left;
+
+    align-items: stretch;
+
+}
+
+
+
+/* Tarjetas de categoría y productos */
+
+
+
+.categoria {
+
+    display: block;
+
+    min-width: 0;
+
+    overflow: hidden;
+
+    padding-bottom: 20px;
+
+    color: #222222;
+
+    text-align: left;
+
+    text-decoration: none;
+
+    background: var(--blanco);
+
+    border: 1px solid var(--gris-claro);
+
+    border-radius: var(--radio);
+
+    transition:
+
+        transform 0.25s ease,
+
+        box-shadow 0.25s ease,
+
+        border-color 0.25s ease;
+
+}
+
+
+
+.categoria:hover {
+
+    transform: translateY(-5px);
+
+    box-shadow: var(--sombra);
+
+    border-color: #DCC77F;
+
+}
+
+
+
+.categoria img {
+
+    display: block;
+
+    width: 100%;
+
+    aspect-ratio: 4 / 3;
+
+    object-fit: cover;
+
+    background: var(--fondo);
+
+}
+
+
+
+.categoria h3 {
+
+    margin: 16px 18px 7px;
+
+    font-size: 17px;
+
+    color: var(--negro);
+
+}
+
+
+
+.categoria span {
+
+    display: inline-block;
+
+    margin: 0 18px;
+
+    color: var(--dorado-oscuro);
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+}
+
+
+
+/* ========================================
+
+   INFORMACIÓN Y PIE DE PÁGINA
+
+======================================== */
+
+
+
+.informacion {
+
+    padding: 45px 20px;
+
+    text-align: center;
+
+    background: var(--negro);
+
+    color: var(--blanco);
+
+}
+
+
+
+.informacion h2 {
+
+    color: var(--dorado);
+
+}
+
+
+
+footer {
+
+    padding: 22px 15px;
+
+    text-align: center;
+
+    background: var(--blanco);
+
+    color: var(--gris);
+
+    font-size: 13px;
+
+    border-top: 1px solid #F0F0F0;
+
+}
+
+
+
+/* ========================================
+
+   PRODUCTO: ESTRUCTURA GENERAL
+
+======================================== */
+
+
+
+.seccion-producto {
+
+    padding: 65px 7%;
+
+    scroll-margin-top: 20px;
+
+}
+
+
+
+.etiqueta-producto {
+
+    color: var(--dorado-oscuro);
+
+    font-size: 12px;
+
+    font-weight: bold;
+
+    letter-spacing: 3px;
+
+    text-transform: uppercase;
+
+}
+
+
+
+/* ========================================
+
+   PRODUCTO: SECCIÓN 1
+
+   DESCRIPCIÓN GENERAL
+
+======================================== */
+
+
+
+ #descripcion-producto {
+
+    display: flex;
+
+    align-items: center;
+
+    min-height: 350px;
+
+    color: var(--blanco);
+
+    background: var(--negro);
+
+}
+
+
+
+.contenido-descripcion {
+
+    width: 100%;
+
+    max-width: 1050px;
+
+    margin: 0 auto;
+
+}
+
+
+
+.contenido-descripcion h1 {
+
+    margin: 12px 0 20px;
+
+    color: var(--blanco);
+
+    font-size: clamp(32px, 5vw, 52px);
+
+    line-height: 1.15;
+
+}
+
+
+
+ #material-producto,
+
+ #descripcion-texto {
+
+    max-width: 720px;
+
+    color: #DDDDDD;
+
+    line-height: 1.8;
+
+}
+
+
+
+ #precio-producto {
+
+    margin: 22px 0;
+
+    color: var(--dorado);
+
+    font-size: 32px;
+
+    font-weight: bold;
+
+}
+
+
+
+ #tipo-producto {
+
+    color: #DDDDDD;
+
+}
+
+
+
+ #descripcion-producto .boton-producto {
+
+    margin-top: 12px;
+
+}
+
+
+
+/* ========================================
+
+   PRODUCTO: SECCIONES 2 Y 3
+
+   VIDEO REAL Y VIDEO GRABADO
+
+======================================== */
+
+
+
+ #producto-real,
+
+ #producto-grabado {
+
+    background: var(--blanco);
+
+}
+
+
+
+ #producto-grabado {
+
+    background: var(--fondo);
+
+}
+
+
+
+.titulo-seccion {
+
+    max-width: 760px;
+
+    margin: 0 auto 32px;
+
+    text-align: center;
+
+}
+
+
+
+.titulo-seccion h2 {
+
+    margin: 10px 0;
+
+    color: var(--negro);
+
+    font-size: clamp(26px, 4vw, 36px);
+
+    line-height: 1.2;
+
+}
+
+
+
+.titulo-seccion > p:last-child {
+
+    color: var(--gris);
+
+    line-height: 1.7;
+
+}
+
+
+
+/* Contenedor de videos */
+
+
+
+.contenedor-video {
+
+    width: 100%;
+
+    max-width: 760px;
+
+    margin: 0 auto;
+
+    overflow: hidden;
+
+    text-align: center;
+
+    border-radius: var(--radio);
+
+}
+
+
+
+.contenedor-video video {
+
+    display: block;
+
+    width: 100%;
+
+    max-height: 650px;
+
+    margin: 0 auto;
+
+    object-fit: contain;
+
+    background: #080808;
+
+    border-radius: var(--radio);
+
+}
+
+
+
+.contenedor-video p {
+
+    padding: 30px 20px;
+
+    color: var(--gris);
+
+    line-height: 1.7;
+
+}
+
+
+
+/* Enlaces de navegación entre secciones */
+
+
+
+ #producto-real,
+
+ #producto-grabado {
+
+    scroll-margin-top: 20px;
+
+}
+
+
+
+/* ========================================
+
+   VOLVER AL CATÁLOGO
+
+======================================== */
+
+
+
+.volver-catalogo {
+
+    padding: 10px 20px 55px;
+
+    text-align: center;
+
+}
+
+
+
+.volver-catalogo a {
+
+    display: inline-block;
+
+    color: var(--dorado-oscuro);
+
+    text-decoration: none;
+
+    font-size: 14px;
+
+    font-weight: bold;
+
+    transition: color 0.2s ease;
+
+}
+
+
+
+.volver-catalogo a:hover {
+
+    color: var(--negro);
+
+}
+
+
+
+/* ========================================
+
+   RESPONSIVE: TABLETS
+
+======================================== */
+
+
+
+@media (max-width: 900px) {
+
+    .encabezado {
+
+        padding-right: 4%;
+
+        padding-left: 4%;
+
+    }
+
+
+
+    .categorias {
+
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+
+        gap: 18px;
+
+    }
+
+
+
+    .portada {
+
+        min-height: 380px;
+
+        padding: 35px;
+
+    }
+
+
+
+    .seccion-producto {
+
+        padding: 50px 5%;
+
+    }
+
+}
+
+
+
+/* ========================================
+
+   RESPONSIVE: CELULARES
+
+======================================== */
+
+
+
+@media (max-width: 600px) {
+
+    .barra-superior {
+
+        padding: 10px;
+
+        font-size: 12px;
+
+    }
+
+
+
+    .encabezado {
+
+        flex-wrap: wrap;
+
+        justify-content: center;
+
+        gap: 18px;
+
+        padding: 18px;
+
+    }
+
+
+
+    .logo {
+
+        width: 100%;
+
+    }
+
+
+
+    .logo span {
+
+        font-size: 30px;
+
+    }
+
+
+
+    .menu {
+
+        order: 3;
+
+        width: 100%;
+
+        justify-content: center;
+
+        flex-wrap: wrap;
+
+        gap: 24px;
+
+    }
+
+
+
+    .menu a {
+
+        font-size: 13px;
+
+    }
+
+
+
+    .portada {
+
+        width: calc(100% - 24px);
+
+        min-height: 340px;
+
+        padding: 24px;
+
+        background-position: center;
+
+    }
+
+
+
+    .portada-texto h1 {
+
+        font-size: 32px;
+
+    }
+
+
+
+    .portada-texto p {
+
+        font-size: 11px;
+
+        letter-spacing: 3px;
+
+    }
+
+
+
+    .seccion-categorias {
+
+        margin: 38px auto;
+
+        padding: 0 15px;
+
+    }
+
+
+
+    .categorias {
+
+        grid-template-columns: 1fr;
+
+        gap: 18px;
+
+    }
+
+
+
+    .categoria img {
+
+        aspect-ratio: 5 / 4;
+
+    }
+
+
+
+    .categoria h3 {
+
+        font-size: 17px;
+
+    }
+
+
+
+    .seccion-producto {
+
+        padding: 42px 18px;
+
+    }
+
+
+
+    #descripcion-producto {
+
+        min-height: auto;
+
+    }
+
+
+
+    .contenido-descripcion h1 {
+
+        font-size: 34px;
+
+    }
+
+
+
+    #precio-producto {
+
+        font-size: 29px;
+
+    }
+
+
+
+    .titulo-seccion {
+
+        margin-bottom: 24px;
+
+    }
+
+
+
+    .contenedor-video video {
+
+        max-height: 500px;
+
+    }
+
+
+
+    .volver-catalogo {
+
+        padding-bottom: 40px;
+
+    }
+
+}
+
+
+
+/* ========================================
+
+   ACCESIBILIDAD
+
+======================================== */
+
+
+
+a:focus-visible,
+
+button:focus-visible,
+
+video:focus-visible {
+
+    outline: 2px solid var(--dorado);
+
+    outline-offset: 4px;
+
+}
+
+/* ========================================
+   NALA PRODUCTO: ACABADO NEGRO Y DORADO
+   Estos estilos solo afectan producto.html
+======================================== */
+
+body:has(#descripcion-producto) {
+    --producto-fondo: #0b0b0b;
+    --producto-panel: #141414;
+    --producto-dorado: #d4af62;
+    --producto-dorado-claro: #f0d99c;
+    --producto-texto: #f5f2eb;
+    --producto-secundario: #b7b2a8;
+    --producto-borde: rgba(212, 175, 98, 0.25);
+
+    color: var(--producto-texto);
+    background: var(--producto-fondo);
+}
+
+html:has(#descripcion-producto) {
+    scroll-padding-top: 85px;
+}
+
+body:has(#descripcion-producto) .barra-superior {
+    padding: 8px 15px;
+    background: var(--producto-dorado);
+    color: #17120a;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+}
+
+body:has(#descripcion-producto) .encabezado {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    min-height: auto;
+    padding: 14px 7%;
+    background: rgba(11, 11, 11, 0.96);
+    border-bottom: 1px solid var(--producto-borde);
+    backdrop-filter: blur(12px);
+}
+
+body:has(#descripcion-producto) .logo {
+    color: var(--producto-dorado);
+}
+
+body:has(#descripcion-producto) .menu a {
+    color: var(--producto-texto);
+}
+
+body:has(#descripcion-producto) .menu a:hover {
+    color: var(--producto-dorado);
+}
+
+body:has(#descripcion-producto) .seccion-producto {
+    width: min(100% - 40px, 1000px);
+    margin: 0 auto;
+    padding: 48px 0;
+    scroll-margin-top: 85px;
+}
+
+body:has(#descripcion-producto) #descripcion-producto {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 340px;
+    color: var(--producto-texto);
+    background: var(--producto-fondo);
+    border-bottom: 1px solid rgba(212, 175, 98, 0.12);
+    text-align: center;
+}
+
+body:has(#descripcion-producto) .contenido-descripcion {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+body:has(#descripcion-producto) .etiqueta-producto {
+    color: var(--producto-dorado);
+    font-size: 11px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
+
+body:has(#descripcion-producto) #nombre-producto {
+    margin: 12px 0;
+    color: var(--producto-dorado-claro);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(30px, 5vw, 48px);
+    line-height: 1.15;
+    font-weight: 500;
+}
+
+body:has(#descripcion-producto) .separador-dorado {
+    width: 55px;
+    height: 2px;
+    margin: 20px auto;
+    background: var(--producto-dorado);
+}
+
+body:has(#descripcion-producto) #material-producto,
+body:has(#descripcion-producto) #descripcion-texto,
+body:has(#descripcion-producto) #tipo-producto {
+    max-width: 650px;
+    margin: 10px auto;
+    color: var(--producto-secundario);
+    font-size: 14px;
+    line-height: 1.8;
+}
+
+body:has(#descripcion-producto) #precio-producto {
+    margin: 20px 0;
+    color: var(--producto-dorado-claro);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(25px, 4vw, 35px);
+    font-weight: bold;
+}
+
+body:has(#descripcion-producto) .boton-producto,
+body:has(#descripcion-producto) .boton-consulta {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 14px;
+    margin-top: 18px;
+    padding: 13px 23px;
+    background: var(--producto-dorado);
+    color: #17120a;
+    border: 1px solid var(--producto-dorado);
+    border-radius: 4px;
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: bold;
+    transition: background 0.25s, transform 0.25s;
+}
+
+body:has(#descripcion-producto) .boton-producto:hover,
+body:has(#descripcion-producto) .boton-consulta:hover {
+    background: var(--producto-dorado-claro);
+    transform: translateY(-2px);
+}
+
+body:has(#descripcion-producto) .nota-producto {
+    margin-top: 16px;
+    color: var(--producto-secundario);
+    font-size: 12px;
+}
+
+body:has(#descripcion-producto) #video,
+body:has(#descripcion-producto) #grabado {
+    background: var(--producto-fondo);
+}
+
+body:has(#descripcion-producto) .titulo-seccion {
+    max-width: 700px;
+    margin: 0 auto 25px;
+    text-align: center;
+}
+
+body:has(#descripcion-producto) .titulo-seccion h2 {
+    margin: 8px 0 12px;
+    color: var(--producto-dorado-claro);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: clamp(25px, 4vw, 35px);
+    line-height: 1.25;
+    font-weight: 500;
+}
+
+body:has(#descripcion-producto) .titulo-seccion > p:last-child {
+    color: var(--producto-secundario);
+    font-size: 14px;
+    line-height: 1.7;
+}
+
+body:has(#descripcion-producto) .contenedor-video {
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+    padding: 10px;
+    overflow: hidden;
+    background: var(--producto-panel);
+    border: 1px solid var(--producto-borde);
+    border-radius: 10px;
+    text-align: center;
+}
+
+body:has(#descripcion-producto) .contenedor-video video,
+body:has(#descripcion-producto) .contenedor-video iframe {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 650px;
+    margin: 0 auto;
+    object-fit: contain;
+    background: #080808;
+    border: 0;
+    border-radius: 6px;
+}
+
+body:has(#descripcion-producto) .contenedor-video p {
+    padding: 20px;
+    color: var(--producto-secundario);
+    line-height: 1.7;
+}
+
+/* Beneficios: tarjeta de regalo y envío gratis */
+body:has(#descripcion-producto) .beneficios-nala {
+    padding: 45px 20px 50px;
+    background:
+        radial-gradient(ellipse at top, rgba(212, 175, 98, 0.09), transparent 65%),
+        #101010;
+    border-top: 1px solid var(--producto-borde);
+    border-bottom: 1px solid var(--producto-borde);
+}
+
+body:has(#descripcion-producto) .beneficios-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+    width: 100%;
+    max-width: 760px;
+    margin: 0 auto;
+}
+
+body:has(#descripcion-producto) .beneficio {
+    padding: 23px 20px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--producto-borde);
+    border-radius: 8px;
+    text-align: center;
+}
+
+body:has(#descripcion-producto) .beneficio-icono {
+    margin-bottom: 8px;
+    color: var(--producto-dorado);
+    font-size: 30px;
+}
+
+body:has(#descripcion-producto) .beneficio h3 {
+    margin: 5px 0 8px;
+    color: var(--producto-dorado-claro);
+    font-family: Georgia, "Times New Roman", serif;
+    font-size: 21px;
+    font-weight: 500;
+}
+
+body:has(#descripcion-producto) .beneficio p {
+    margin: 0;
+    color: var(--producto-secundario);
+    font-size: 13px;
+}
+
+body:has(#descripcion-producto) .nota-envio {
+    display: block;
+    margin-top: 8px;
+    color: var(--producto-dorado);
+    font-size: 11px;
+}
+
+body:has(#descripcion-producto) .boton-consulta {
+    display: flex;
+    width: fit-content;
+    max-width: 100%;
+    margin: 25px auto 0;
+}
+
+body:has(#descripcion-producto) .volver-catalogo {
+    padding: 25px 20px;
+    text-align: center;
+}
+
+body:has(#descripcion-producto) .volver-catalogo a {
+    color: var(--producto-dorado);
+}
+
+body:has(#descripcion-producto) .volver-catalogo a:hover {
+    color: var(--producto-dorado-claro);
+}
+
+body:has(#descripcion-producto) footer.pie-nala {
+    padding: 28px 20px 25px;
+    background: #070707;
+    color: var(--producto-secundario);
+    border-top: 1px solid rgba(212, 175, 98, 0.12);
+    text-align: center;
+}
+
+body:has(#descripcion-producto) .logo-footer {
+    display: inline-flex;
+}
+
+body:has(#descripcion-producto) .pie-nala p {
+    margin: 15px 0;
+    color: var(--producto-secundario);
+    font-family: Georgia, "Times New Roman", serif;
+    font-style: italic;
+    font-size: 13px;
+}
+
+body:has(#descripcion-producto) .pie-nala > small {
+    color: #77736c;
+    font-size: 10px;
+}
+
+/* Botón flotante WhatsApp: una sola definición */
+.boton-whatsapp {
+    position: fixed;
+    left: 22px;
+    bottom: 22px;
+    z-index: 9999;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 9px;
+    padding: 12px 18px;
+    background: #25D366;
+    color: #fff;
+    border-radius: 50px;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.35);
+    font-size: 14px;
+    font-weight: bold;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.boton-whatsapp:hover {
+    background: #1ebe5d;
+    transform: translateY(-3px);
+}
+
+.boton-whatsapp svg {
+    display: block;
+    flex-shrink: 0;
+}
+
+/* Responsive exclusivo de la página de producto */
+@media (max-width: 900px) {
+    body:has(#descripcion-producto) .encabezado {
+        padding-right: 4%;
+        padding-left: 4%;
+    }
+
+    body:has(#descripcion-producto) .seccion-producto {
+        width: 90%;
+    }
+}
+
+@media (max-width: 600px) {
+    body:has(#descripcion-producto) .barra-superior {
+        padding: 9px 10px;
+        font-size: 9px;
+        letter-spacing: 1px;
+    }
+
+    body:has(#descripcion-producto) .encabezado {
+        flex-wrap: nowrap;
+        justify-content: space-between;
+        gap: 12px;
+        padding: 12px 16px;
+    }
+
+    body:has(#descripcion-producto) .logo {
+        width: auto;
+        min-width: 0;
+    }
+
+    body:has(#descripcion-producto) .logo span {
+        font-size: 24px;
+        letter-spacing: 4px;
+    }
+
+    body:has(#descripcion-producto) .logo small {
+        font-size: 8px;
+        letter-spacing: 3px;
+    }
+
+    body:has(#descripcion-producto) .menu {
+        order: initial;
+        width: auto;
+        justify-content: flex-end;
+        flex-wrap: nowrap;
+        gap: 14px;
+    }
+
+    body:has(#descripcion-producto) .menu a {
+        font-size: 12px;
+        white-space: nowrap;
+    }
+
+    body:has(#descripcion-producto) .seccion-producto {
+        width: calc(100% - 32px);
+        padding: 34px 0;
+    }
+
+    body:has(#descripcion-producto) #descripcion-producto {
+        min-height: 0;
+    }
+
+    body:has(#descripcion-producto) #nombre-producto {
+        font-size: 32px;
+    }
+
+    body:has(#descripcion-producto) .titulo-seccion {
+        margin-bottom: 20px;
+    }
+
+    body:has(#descripcion-producto) .titulo-seccion h2 {
+        font-size: 27px;
+    }
+
+    body:has(#descripcion-producto) .contenedor-video {
+        padding: 6px;
+        border-radius: 8px;
+    }
+
+    body:has(#descripcion-producto) .beneficios-nala {
+        padding: 35px 16px;
+    }
+
+    body:has(#descripcion-producto) .beneficios-grid {
+        gap: 10px;
+    }
+
+    body:has(#descripcion-producto) .beneficio {
+        padding: 17px 10px;
+    }
+
+    body:has(#descripcion-producto) .beneficio h3 {
+        font-size: 17px;
+    }
+
+    body:has(#descripcion-producto) .beneficio p {
+        font-size: 12px;
+    }
+
+    .boton-whatsapp {
+        left: 14px;
+        bottom: 14px;
+        padding: 11px 15px;
+        font-size: 13px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    body:has(#descripcion-producto) *,
+    body:has(#descripcion-producto) *::before,
+    body:has(#descripcion-producto) *::after {
+        transition: none !important;
+        animation: none !important;
+    }
+}
+
+/* ========================================
+   PALETA CLARA NALA: BLANCO, MARFIL Y DORADO
+   Ajustes visuales para una presentación más limpia
+======================================== */
+:root {
+    --negro: #292929;
+    --negro-puro: #FFFFFF;
+    --dorado: #C6A15B;
+    --dorado-oscuro: #A7833F;
+    --blanco: #FFFFFF;
+    --gris: #686868;
+    --gris-claro: #EAE5DC;
+    --fondo: #FFFFFF;
+    --sombra: 0 5px 22px rgba(40, 32, 18, 0.08);
+}
+
+body {
+    color: #292929;
+    background: #FFFFFF;
+}
+
+.barra-superior {
+    background: #FFFFFF;
+    color: #8E6C2F;
+    border-bottom: 1px solid #E8D9B8;
+}
+
+.informacion {
+    background: #F7F4EE;
+    color: #292929;
+}
+
+.informacion h2 {
+    color: #A7833F;
+}
+
+/* Colores claros aplicados solo a la página de producto */
+body:has(#descripcion-producto) {
+    --producto-fondo: #FFFFFF;
+    --producto-panel: #FAF8F3;
+    --producto-dorado: #A7833F;
+    --producto-dorado-claro: #967331;
+    --producto-texto: #292929;
+    --producto-secundario: #68645D;
+    --producto-borde: #E8E0D2;
+    color: #292929;
+    background: #FFFFFF;
+}
+
+body:has(#descripcion-producto) .barra-superior {
+    background: #FFFFFF;
+    color: #8E6C2F;
+    border-bottom: 1px solid #E8D9B8;
+}
+
+body:has(#descripcion-producto) #descripcion-producto {
+    background: #FFFFFF;
+    color: #292929;
+}
+
+body:has(#descripcion-producto) .seccion-producto {
+    background: #FFFFFF;
+}
+
+body:has(#descripcion-producto) #nombre-producto,
+body:has(#descripcion-producto) .titulo-seccion h2 {
+    color: #967331;
+}
+
+body:has(#descripcion-producto) .contenedor-video {
+    background: #FAF8F3;
+    border-color: #E8E0D2;
+    box-shadow: 0 5px 22px rgba(40, 32, 18, 0.06);
+}
+
+body:has(#descripcion-producto) .contenedor-video video,
+body:has(#descripcion-producto) .contenedor-video iframe {
+    background: #F2F0EB;
+}
+
+body:has(#descripcion-producto) .beneficios-nala {
+    background: #F7F4EE;
+    border-top: 1px solid #E8E0D2;
+    border-bottom: 1px solid #E8E0D2;
+}
+
+body:has(#descripcion-producto) .beneficio {
+    background: #FFFFFF;
+    border-color: #E8E0D2;
+    box-shadow: 0 4px 16px rgba(40, 32, 18, 0.04);
+}
+
+body:has(#descripcion-producto) .beneficio h3 {
+    color: #967331;
+}
+
+body:has(#descripcion-producto) .beneficio p,
+body:has(#descripcion-producto) .titulo-seccion > p:last-child {
+    color: #68645D;
+}
+
+body:has(#descripcion-producto) .nota-envio {
+    color: #8E6C2F;
+}
+
+body:has(#descripcion-producto) .volver-catalogo {
+    background: #FFFFFF;
+}
+
+body:has(#descripcion-producto) .volver-catalogo a {
+    color: #967331;
+}
+
+body:has(#descripcion-producto) footer.pie-nala {
+    background: #FFFFFF;
+    color: #68645D;
+    border-top: 1px solid #E8E0D2;
+}
+
+body:has(#descripcion-producto) .pie-nala p {
+    color: #68645D;
+}
+
+body:has(#descripcion-producto) .pie-nala > small {
+    color: #77736C;
+}
+
+body:has(#descripcion-producto) .boton-consulta {
+    background: #C6A15B;
+    color: #FFFFFF;
+}
+
+.boton-whatsapp {
+    box-shadow: 0 4px 18px rgba(40, 32, 18, 0.18);
+}
+
+
+/* ===== AJUSTE DE DISTRIBUCIÓN: PÁGINA DE PRODUCTO NALA ===== */
+body:has(#descripcion-producto) #descripcion-producto {
+    max-width: 980px;
+    margin: 0 auto;
+    padding: 44px 24px 34px;
+}
+
+body:has(#descripcion-producto) #nombre-producto {
+    font-size: clamp(2rem, 3.5vw, 2.8rem);
+    line-height: 1.15;
+    margin: 10px 0 16px;
+}
+
+body:has(#descripcion-producto) #descripcion-texto,
+body:has(#descripcion-producto) #material-producto,
+body:has(#descripcion-producto) .nota-producto {
+    font-size: 0.98rem;
+    line-height: 1.7;
+}
+
+body:has(#descripcion-producto) #precio-producto {
+    font-size: clamp(1.8rem, 3vw, 2.25rem);
+    margin: 18px 0;
+}
+
+/* Añade ambos bloques de video dentro de <div class="videos-nala"> */
+body:has(#descripcion-producto) .videos-nala {
+    width: min(100% - 40px, 1000px);
+    margin: 30px auto 48px;
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 28px;
+    align-items: start;
+}
+
+body:has(#descripcion-producto) .videos-nala > section {
+    min-width: 0;
+    margin: 0;
+    padding: 0;
+}
+
+body:has(#descripcion-producto) .videos-nala .titulo-seccion {
+    min-height: 92px;
+    margin: 0 0 14px;
+    padding: 0 8px;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+body:has(#descripcion-producto) .videos-nala .titulo-seccion h2 {
+    font-size: clamp(1.25rem, 2vw, 1.65rem);
+    line-height: 1.25;
+    margin: 8px 0;
+}
+
+body:has(#descripcion-producto) .videos-nala .titulo-seccion > p:last-child {
+    font-size: 0.9rem;
+    line-height: 1.5;
+}
+
+body:has(#descripcion-producto) .videos-nala .contenedor-video {
+    width: 100%;
+    max-width: none;
+    margin: 0;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+body:has(#descripcion-producto) .videos-nala .contenedor-video video,
+body:has(#descripcion-producto) .videos-nala .contenedor-video iframe {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    max-height: 460px;
+    object-fit: contain;
+    border-radius: 3px;
+}
+
+body:has(#descripcion-producto) .beneficios-nala {
+    padding: 34px 24px 42px;
+}
+
+body:has(#descripcion-producto) .beneficios-grid {
+    width: min(100%, 760px);
+    margin: 22px auto 0;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px;
+}
+
+body:has(#descripcion-producto) .beneficio {
+    padding: 22px 18px;
+}
+
+@media (max-width: 700px) {
+    body:has(#descripcion-producto) .videos-nala {
+        width: min(100% - 28px, 520px);
+        grid-template-columns: 1fr;
+        gap: 34px;
+        margin: 24px auto 36px;
+    }
+
+    body:has(#descripcion-producto) .videos-nala .titulo-seccion {
+        min-height: 0;
+        padding: 0 4px;
+    }
+
+    body:has(#descripcion-producto) .videos-nala .contenedor-video {
+        max-width: 440px;
+        margin: 0 auto;
+    }
+
+    body:has(#descripcion-producto) .beneficios-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+    }
+}
+
+@media (max-width: 420px) {
+    body:has(#descripcion-producto) .beneficios-grid {
+        grid-template-columns: 1fr;
+    }
+}
