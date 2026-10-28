@@ -104,7 +104,7 @@ heartScene.addEventListener("click", (e) => {
           setTimeout(() => {
             finalCard.hidden = true;
             romanticStory.hidden = false;
-            initSliderAndAudio(); // Inicializar carrusel y reproducción de audio local
+            initSlider(); // Inicializar carrusel táctil (audio controlado por el usuario)
           }, 400);
         }, 1500);
 
@@ -172,8 +172,8 @@ function showFloatingHearts() {
   }
 }
 
-// --- LÓGICA DEL CARRUSEL TÁCTIL Y AUDIO ---
-function initSliderAndAudio() {
+// --- LÓGICA DEL CARRUSEL TÁCTIL Y ACORDEÓN ---
+function initSlider() {
   const track = document.getElementById("sliderTrack");
   const dots = document.querySelectorAll(".dot");
   if (!track) return;
@@ -231,12 +231,4 @@ function initSliderAndAudio() {
       updateSlider();
     });
   });
-
-  // Intentar reproducir el audio local predeterminado de la carpeta Archivos/audio/cancion.mp3
-  const audioPlayer = document.getElementById("audioPlayer");
-  if (audioPlayer) {
-    audioPlayer.play().catch(() => {
-      console.log("Auto-play prevenido por el navegador, la persona puede presionar Play manualmente.");
-    });
-  }
 }
