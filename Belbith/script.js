@@ -1,13 +1,13 @@
 // Configuración de nombres y mensajes
 const CONFIG = {
   segundosCarga: 3,
-  para: "Sofía",
-  de: "Alex ❤️",
+  para: "Belbith",
+  de: "Luis ❤️",
   mensajeInicial: "“Espero que te guste, mi amor. ♥ Lo hice con todo mi corazón, solo para ti.”",
   recuerdos: [
     "Recuerdo 1: cada momento contigo es especial. ❤️",
     "Recuerdo 2: tu sonrisa siempre mejora mis días. 💗",
-    "Recuerdo 3: mi corazón está lleno de amor por ti. Te quiero, Sofía. ❤️"
+    "Recuerdo 3: mi corazón está lleno de amor por ti. Te quiero, Belbith. ❤️"
   ]
 };
 
