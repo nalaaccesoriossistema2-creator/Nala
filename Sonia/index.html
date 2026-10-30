@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7e9ed">
+  <meta name="description" content="Un regalo hecho con amor para Sonia.">
+  <title>Un regalo para ti ❤️</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="script.js" defer></script>
+</head>
+<body>
+  <main>
+    <!-- Pantalla de Carga -->
+    <section class="screen active" id="loading" aria-label="Abriendo regalo">
+      <div class="loading-content">
+        <div class="loading-heart" aria-hidden="true">♥</div>
+        <div class="loading-label">Abriendo tu regalo...</div>
+      </div>
+    </section>
+
+    <!-- Pantalla Principal -->
+    <section class="screen" id="welcome" aria-label="Tu regalo romántico">
+      <div class="gift-wrap" id="giftWrap">
+        <div class="brand" id="brand">Tu <span>regalo</span> ♡</div>
+
+        <!-- Tarjeta Inicial -->
+        <article class="gift-card" id="giftCard">
+          <div class="eyebrow">Tienes un regalo</div>
+          <div class="for-label">Para</div>
+          <h1 id="recipient">Sonia</h1>
+          <div class="thin-line"></div>
+          <div class="from">De <strong id="sender">Jefferson ❤️</strong></div>
+          <p class="message" id="introMessage">“Espero que te guste, mi amor. ♥ Lo hice con todo mi corazón, solo para ti.”</p>
+        </article>
+
+        <!-- Escena del Corazón Interactivo -->
+        <section class="heart-scene" id="heartScene" aria-label="Corazón de recuerdos" hidden>
+          <div class="heart-container" id="heartContainer">
+            <svg class="big-heart" id="bigHeart" viewBox="0 0 200 180" role="img" aria-label="Corazón interactivo">
+              <defs>
+                <clipPath id="bigHeartClip">
+                  <rect id="bigFillRect" x="0" y="180" width="200" height="0"></rect>
+                </clipPath>
+                <filter id="glow" x="-20%" y="-20%" width="140%" height="140%">
+                  <feGaussianBlur stdDeviation="3" result="blur"/>
+                  <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+                </filter>
+              </defs>
+              <path class="big-heart-fill" clip-path="url(#bigHeartClip)"
+                d="M100 166 C84 151 13 105 13 55 C13 20 57 7 100 48 C143 7 187 20 187 55 C187 105 116 151 100 166 Z"/>
+              <path class="big-heart-outline"
+                d="M100 166 C84 151 13 105 13 55 C13 20 57 7 100 48 C143 7 187 20 187 55 C187 105 116 151 100 166 Z"/>
+            </svg>
+          </div>
+          <div class="progress-label" id="progressLabel">0%</div>
+          <p class="memory-instruction" id="memoryInstruction">Cada toque abre un recuerdo</p>
+          <p class="memory-message" id="memoryMessage" aria-live="polite"></p>
+        </section>
+
+        <!-- Mensaje de Regalo Abierto (Aparece tras el 100%) -->
+        <article class="final-card" id="finalCard" hidden>
+          <div class="gift-box-icon">🎁</div>
+          <h2 class="final-title">Has abierto tu regalo ♥</h2>
+          <div class="thin-line"></div>
+          <p class="final-subtitle">Un recuerdo creado especialmente para ti</p>
+        </article>
+
+        <!-- Botón para Iniciar -->
+        <p class="instruction" id="instruction">Toca el corazón para descubrir tu regalo.</p>
+        <button class="heart-button" id="heartButton" type="button" aria-label="Descubrir tu regalo">
+          <svg viewBox="0 0 48 48" aria-hidden="true">
+            <path d="M24 40S5.5 28.8 5.5 16.8C5.5 9.2 15.2 5.5 24 15.2 32.8 5.5 42.5 9.2 42.5 16.8C42.5 28.8 24 40 24 40Z"/>
+          </svg>
+        </button>
+
+        <!-- CONTENIDO ROMÁNTICO COMPLETO -->
+        <div class="romantic-story" id="romanticStory" hidden>
+          
+          <!-- 1. Foto Principal Juntos -->
+          <div class="story-card">
+            <div class="photo-frame">
+              <img src="Archivos/imagen.jpg" alt="Foto juntos">
+              <div class="photo-caption">Nosotros ❤️</div>
+            </div>
+          </div>
+
+          <!-- 2. Acordeón / Carrusel Deslizable con el Dedo o Puntos -->
+          <div class="story-card slider-section">
+            <h3 class="story-title">Momentos Inolvidables <span>(Desliza)</span></h3>
+            <div class="slider-container" id="sliderContainer">
+              <div class="slider-track" id="sliderTrack">
+                <div class="slide">
+                  <img src="Archivos/imagen1.jpg" alt="Momento 1">
+                  <p class="slide-caption">Nuestro primer viaje 🌹</p>
+                </div>
+                <div class="slide">
+                  <img src="Archivos/imagen2.jpg" alt="Momento 2">
+                  <p class="slide-caption">Risas compartidas ✨</p>
+                </div>
+                <div class="slide">
+                  <img src="Archivos/imagen3.jpg" alt="Momento 3">
+                  <p class="slide-caption">Para siempre juntos 💖</p>
+                </div>
+              </div>
+            </div>
+            <!-- 3 Puntos del Acordeón -->
+            <div class="dots-container" id="dotsContainer">
+              <span class="dot active" data-index="0"></span>
+              <span class="dot" data-index="1"></span>
+              <span class="dot" data-index="2"></span>
+            </div>
+          </div>
+
+          <!-- 3. Video Juntos -->
+          <div class="story-card">
+            <h3 class="story-title">Nuestro Video Especial 🎥</h3>
+            <div class="video-wrapper">
+              <video controls poster="https://images.unsplash.com/photo-1518199266791-5375a83190b7?auto=format&fit=crop&w=800&q=80">
+                <source src="Archivos/video.mp4" type="video/mp4">
+                Tu navegador no soporta video.
+              </video>
+            </div>
+          </div>
+
+          <!-- 4. Reproductor de Audio Predeterminado -->
+          <div class="story-card">
+            <h3 class="story-title">Nuestra Canción / Mensaje de Voz 🎵</h3>
+            <div class="audio-box">
+              <audio id="audioPlayer" controls preload="metadata">
+                <source src="Archivos/audio.mp3" type="audio/mpeg">
+                Tu navegador no soporta la reproducción de audio.
+              </audio>
+              <p class="audio-hint">Nuestra canción especial ♥</p>
+            </div>
+          </div>
+
+          <!-- 5. Mensaje Personalizado -->
+          <div class="story-card letter-card">
+            <div class="stamp">❤️</div>
+            <h3 class="story-title">Carta para ti</h3>
+            <p class="letter-text">“Eres el regalo más bonito que la vida me ha dado. Gracias por cada sonrisa, por tu apoyo incondicional y por hacer que cada día tenga un brillo diferente.”</p>
+            <p class="signature">Con todo mi amor, Jefferson</p>
+          </div>
+
+          <!-- 6. Foto Desvanecida con Nombres Sobrepuestos -->
+          <div class="hero-footer">
+            <div class="faded-bg"></div>
+            <div class="names-overlay">
+              <h2 class="couple-names">Jefferson & Sonia</h2>
+              <span class="end-heart">♥</span>
+            </div>
+          </div>
+
+        </div> <!-- Fin de la historia romántica -->
+
+      </div>
+    </section>
+  </main>
+</body>
+</html>
