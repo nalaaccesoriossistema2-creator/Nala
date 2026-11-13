@@ -1,0 +1,614 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reconocedor Shalom - Orden y Código</title>
+
+<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+
+<style>
+*{box-sizing:border-box}
+body{
+    margin:0;
+    padding:20px;
+    background:#f1f3f5;
+    font-family:Arial,sans-serif;
+    color:#222;
+}
+.container{max-width:1200px;margin:auto}
+.panel{
+    background:white;
+    padding:20px;
+    border-radius:12px;
+    margin-bottom:18px;
+    box-shadow:0 2px 8px #0001;
+}
+h1{margin:0 0 5px}
+.subtitle{color:#777;margin-top:0}
+button{
+    border:0;
+    border-radius:7px;
+    padding:11px 15px;
+    background:#222;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+button:disabled{opacity:.5}
+.green{background:#16834a}
+.blue{background:#1769aa}
+.red{background:#b83232}
+input[type=file]{display:none}
+.upload{
+    display:block;
+    border:2px dashed #aaa;
+    border-radius:10px;
+    text-align:center;
+    padding:25px;
+    cursor:pointer;
+}
+.upload:hover{background:#fafafa}
+.toolbar{
+    display:flex;
+    gap:8px;
+    flex-wrap:wrap;
+    margin-top:14px;
+}
+.editor{
+    position:relative;
+    width:100%;
+    overflow:hidden;
+    background:#333;
+    border-radius:9px;
+    margin-top:15px;
+    touch-action:pan-y;
+    user-select:none;
+}
+.editor img{
+    display:block;
+    width:100%;
+    height:auto;
+    pointer-events:none;
+}
+.zone{
+    position:absolute;
+    border:3px solid;
+    cursor:move;
+    min-width:25px;
+    min-height:20px;
+    touch-action:none;
+}
+.zone.order{border-color:#1685ff;background:#1685ff22}
+.zone.code{border-color:#13a45b;background:#13a45b22}
+.zone-label{
+    position:absolute;
+    top:-25px;
+    left:-3px;
+    padding:4px 7px;
+    color:white;
+    font-size:12px;
+    font-weight:bold;
+    white-space:nowrap;
+    border-radius:4px 4px 0 0;
+}
+.order .zone-label{background:#1685ff}
+.code .zone-label{background:#13a45b}
+.handle{
+    position:absolute;
+    width:17px;
+    height:17px;
+    right:-8px;
+    bottom:-8px;
+    border:2px solid white;
+    border-radius:50%;
+    background:currentColor;
+    cursor:nwse-resize;
+}
+.order .handle{color:#1685ff}
+.code .handle{color:#13a45b}
+.zone.active{z-index:5}
+.zone.active{box-shadow:0 0 0 2px white}
+.result-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:12px;
+}
+.result{
+    padding:15px;
+    border:1px solid #ddd;
+    border-radius:9px;
+}
+.result h3{margin:0 0 10px}
+.result input{
+    width:100%;
+    padding:12px;
+    font-size:19px;
+    border:1px solid #ccc;
+    border-radius:6px;
+}
+.order-title{color:#1685ff}
+.code-title{color:#13a45b}
+.status{
+    margin-top:14px;
+    padding:12px;
+    background:#f4f4f4;
+    border-radius:7px;
+}
+.progress{
+    height:8px;
+    background:#ddd;
+    border-radius:10px;
+    overflow:hidden;
+    margin-top:8px;
+}
+.progress div{
+    height:100%;
+    width:0;
+    background:#16834a;
+}
+.raw{
+    background:#f4f4f4;
+    border-radius:7px;
+    padding:12px;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+    font-size:13px;
+}
+.hint{font-size:13px;color:#666;line-height:1.5}
+@media(max-width:650px){
+    body{padding:9px}
+    .panel{padding:13px}
+    .result-grid{grid-template-columns:1fr}
+}
+</style>
+</head>
+
+<body>
+<div class="container">
+
+<div class="panel">
+    <h1>📦 Reconocedor Shalom</h1>
+    <p class="subtitle">Primera etapa: N.º de orden y código.</p>
+
+    <label class="upload" for="file">
+        <strong>📷 Seleccionar fotografía del ticket</strong>
+        <p>JPG, PNG o WEBP</p>
+    </label>
+    <input type="file" id="file" accept="image/*">
+
+    <div class="toolbar">
+        <button class="blue" onclick="selectZone('order')">Seleccionar orden</button>
+        <button class="green" onclick="selectZone('code')">Seleccionar código</button>
+        <button onclick="resetZones()">Restablecer rectángulos</button>
+    </div>
+
+    <p class="hint">
+        Selecciona una zona y dibuja un rectángulo arrastrando sobre la imagen.
+        También puedes moverlo arrastrando su interior o cambiar su tamaño
+        desde el círculo de la esquina inferior derecha.
+    </p>
+
+    <div id="editor" class="editor" style="display:none">
+        <img id="ticketImage" alt="Ticket Shalom">
+        <div id="orderZone" class="zone order" data-type="order">
+            <span class="zone-label">N.º DE ORDEN</span>
+            <span class="handle"></span>
+        </div>
+        <div id="codeZone" class="zone code" data-type="code">
+            <span class="zone-label">CÓDIGO</span>
+            <span class="handle"></span>
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <button class="green" id="readBtn" onclick="recognizeZones()">
+            🔍 Reconocer orden y código
+        </button>
+        <button class="blue" onclick="saveTemplate()">
+            Guardar plantilla
+        </button>
+        <button onclick="loadTemplate()">
+            Cargar plantilla
+        </button>
+    </div>
+
+    <div class="status">
+        <div id="statusText">Esperando fotografía...</div>
+        <div class="progress"><div id="progressBar"></div></div>
+    </div>
+</div>
+
+<div class="panel">
+    <h2>Resultados del reconocimiento</h2>
+
+    <div class="result-grid">
+        <div class="result">
+            <h3 class="order-title">N.º DE ORDEN</h3>
+            <input id="orderResult" placeholder="Número reconocido">
+        </div>
+
+        <div class="result">
+            <h3 class="code-title">CÓDIGO</h3>
+            <input id="codeResult" placeholder="Código reconocido">
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <button class="green" onclick="copyResults()">Copiar resultados</button>
+        <button class="blue" onclick="downloadResults()">Descargar TXT</button>
+    </div>
+</div>
+
+<div class="panel">
+    <h2>Texto detectado por cada rectángulo</h2>
+
+    <h3 class="order-title">N.º de orden</h3>
+    <pre id="orderRaw" class="raw">Sin procesar.</pre>
+
+    <h3 class="code-title">Código</h3>
+    <pre id="codeRaw" class="raw">Sin procesar.</pre>
+</div>
+
+</div>
+
+<script>
+const fileInput = document.getElementById("file");
+const editor = document.getElementById("editor");
+const image = document.getElementById("ticketImage");
+
+const orderZone = document.getElementById("orderZone");
+const codeZone = document.getElementById("codeZone");
+
+let currentFile = null;
+let activeZone = "order";
+let drawing = false;
+let dragMode = null;
+let startX = 0;
+let startY = 0;
+let originalRect = null;
+let currentRect = null;
+let worker = null;
+let busy = false;
+
+const zones = {
+    order:orderZone,
+    code:codeZone
+};
+
+// Cargar fotografía
+fileInput.addEventListener("change",e=>{
+    const file = e.target.files[0];
+    if(!file) return;
+
+    if(currentFile) URL.revokeObjectURL(image.src);
+
+    currentFile = file;
+    image.onload = ()=>{
+        editor.style.display = "block";
+        loadTemplate(false);
+        updateStatus("Fotografía cargada. Ajusta los rectángulos.");
+    };
+    image.src = URL.createObjectURL(file);
+});
+
+// Cambiar zona seleccionada
+function selectZone(type){
+    activeZone = type;
+    updateZoneStyles();
+    updateStatus(type === "order"
+        ? "Dibuja o ajusta el rectángulo del N.º de orden."
+        : "Dibuja o ajusta el rectángulo del código."
+    );
+}
+
+function updateZoneStyles(){
+    Object.entries(zones).forEach(([type,el])=>{
+        el.classList.toggle("active",type === activeZone);
+    });
+}
+
+// Coordenadas relativas a la imagen
+function pointerPosition(e){
+    const rect = editor.getBoundingClientRect();
+    return {
+        x:Math.max(0,Math.min(100,(e.clientX-rect.left)/rect.width*100)),
+        y:Math.max(0,Math.min(100,(e.clientY-rect.top)/rect.height*100))
+    };
+}
+
+function setRect(el,r){
+    el.style.left = r.x+"%";
+    el.style.top = r.y+"%";
+    el.style.width = r.w+"%";
+    el.style.height = r.h+"%";
+}
+
+function getRect(el){
+    return {
+        x:parseFloat(el.style.left)||0,
+        y:parseFloat(el.style.top)||0,
+        w:parseFloat(el.style.width)||20,
+        h:parseFloat(el.style.height)||10
+    };
+}
+
+function clampRect(r){
+    r.w=Math.max(2,Math.min(r.w,100-r.x));
+    r.h=Math.max(2,Math.min(r.h,100-r.y));
+    r.x=Math.max(0,Math.min(r.x,100-r.w));
+    r.y=Math.max(0,Math.min(r.y,100-r.h));
+    return r;
+}
+
+// Dibujar, mover y redimensionar
+editor.addEventListener("pointerdown",e=>{
+    if(!currentFile || busy) return;
+    if(e.target.closest(".zone")) return;
+
+    const p=pointerPosition(e);
+    drawing=true;
+    dragMode="draw";
+    startX=p.x;
+    startY=p.y;
+    currentRect={x:p.x,y:p.y,w:0,h:0};
+
+    setRect(zones[activeZone],currentRect);
+    zones[activeZone].style.display="block";
+    editor.setPointerCapture(e.pointerId);
+});
+
+Object.values(zones).forEach(el=>{
+    el.addEventListener("pointerdown",e=>{
+        if(busy) return;
+
+        const type=el.dataset.type;
+        activeZone=type;
+        updateZoneStyles();
+
+        const p=pointerPosition(e);
+        startX=p.x;
+        startY=p.y;
+        originalRect=getRect(el);
+
+        dragMode=e.target.classList.contains("handle")
+            ? "resize":"move";
+
+        drawing=true;
+        editor.setPointerCapture(e.pointerId);
+        e.stopPropagation();
+    });
+});
+
+editor.addEventListener("pointermove",e=>{
+    if(!drawing || !dragMode) return;
+
+    const p=pointerPosition(e);
+    const el=zones[activeZone];
+    let r;
+
+    if(dragMode==="draw"){
+        r={
+            x:Math.min(startX,p.x),
+            y:Math.min(startY,p.y),
+            w:Math.abs(p.x-startX),
+            h:Math.abs(p.y-startY)
+        };
+    }
+
+    if(dragMode==="move"){
+        const dx=p.x-startX;
+        const dy=p.y-startY;
+        r={
+            ...originalRect,
+            x:originalRect.x+dx,
+            y:originalRect.y+dy
+        };
+    }
+
+    if(dragMode==="resize"){
+        r={
+            ...originalRect,
+            w:originalRect.w+(p.x-startX),
+            h:originalRect.h+(p.y-startY)
+        };
+    }
+
+    setRect(el,clampRect(r));
+});
+
+editor.addEventListener("pointerup",()=>{
+    drawing=false;
+    dragMode=null;
+});
+
+editor.addEventListener("pointercancel",()=>{
+    drawing=false;
+    dragMode=null;
+});
+
+// Plantilla reutilizable
+function saveTemplate(){
+    if(!currentFile){
+        alert("Primero carga una imagen.");
+        return;
+    }
+
+    const template={
+        order:getRect(orderZone),
+        code:getRect(codeZone)
+    };
+
+    localStorage.setItem("shalomTemplate",JSON.stringify(template));
+    updateStatus("Plantilla guardada en este navegador.");
+}
+
+function loadTemplate(showMessage=true){
+    const saved=localStorage.getItem("shalomTemplate");
+
+    if(saved){
+        try{
+            const template=JSON.parse(saved);
+            setRect(orderZone,template.order);
+            setRect(codeZone,template.code);
+            if(showMessage) updateStatus("Plantilla cargada.");
+        }catch(e){
+            defaultZones();
+        }
+    }else{
+        defaultZones();
+        if(showMessage) updateStatus("No hay plantilla guardada. Ajusta los rectángulos.");
+    }
+}
+
+function defaultZones(){
+    setRect(orderZone,{x:10,y:12,w:45,h:9});
+    setRect(codeZone,{x:10,y:23,w:45,h:9});
+}
+
+function resetZones(){
+    if(!currentFile) return;
+    defaultZones();
+    updateStatus("Rectángulos restablecidos. Acomódalos sobre los datos.");
+}
+
+// Recortar zona en resolución original
+function cropZone(el){
+    const r=getRect(el);
+
+    const canvas=document.createElement("canvas");
+    const ctx=canvas.getContext("2d");
+
+    const sx=Math.round(image.naturalWidth*r.x/100);
+    const sy=Math.round(image.naturalHeight*r.y/100);
+    const sw=Math.round(image.naturalWidth*r.w/100);
+    const sh=Math.round(image.naturalHeight*r.h/100);
+
+    // Aumentar tamaño para ayudar al OCR
+    const scale=3;
+
+    canvas.width=Math.max(1,sw*scale);
+    canvas.height=Math.max(1,sh*scale);
+
+    ctx.imageSmoothingEnabled=false;
+    ctx.drawImage(
+        image,
+        sx,sy,sw,sh,
+        0,0,canvas.width,canvas.height
+    );
+
+    return canvas;
+}
+
+function cleanDigits(text){
+    return (text||"")
+        .replace(/[Oo]/g,"0")
+        .replace(/[Il|]/g,"1")
+        .replace(/[^0-9]/g,"");
+}
+
+function cleanCode(text){
+    return (text||"")
+        .toUpperCase()
+        .replace(/[^A-Z0-9-]/g,"");
+}
+
+async function getWorker(){
+    if(!worker){
+        worker=await Tesseract.createWorker("spa",1,{
+            logger:info=>{
+                if(info.status==="recognizing text"){
+                    document.getElementById("statusText").textContent=
+                        "Reconociendo texto...";
+                }
+            }
+        });
+    }
+    return worker;
+}
+
+async function recognizeZones(){
+    if(!currentFile){
+        alert("Primero carga una fotografía.");
+        return;
+    }
+
+    if(busy) return;
+    busy=true;
+
+    const btn=document.getElementById("readBtn");
+    btn.disabled=true;
+
+    try{
+        updateStatus("Preparando OCR...");
+        const ocr=await getWorker();
+
+        // OCR independiente para orden
+        updateStatus("Leyendo N.º de orden...");
+        const orderCrop=cropZone(orderZone);
+        const orderResult=await ocr.recognize(orderCrop);
+        const orderText=orderResult.data.text.trim();
+
+        // OCR independiente para código
+        updateStatus("Leyendo código...");
+        const codeCrop=cropZone(codeZone);
+        const codeResult=await ocr.recognize(codeCrop);
+        const codeText=codeResult.data.text.trim();
+
+        document.getElementById("orderRaw").textContent=
+            orderText || "No se reconoció texto.";
+
+        document.getElementById("codeRaw").textContent=
+            codeText || "No se reconoció texto.";
+
+        const order=cleanDigits(orderText);
+        const code=cleanCode(codeText);
+
+        document.getElementById("orderResult").value=order;
+        document.getElementById("codeResult").value=code;
+
+        updateStatus("Reconocimiento terminado. Revisa los resultados.");
+
+    }catch(error){
+        console.error(error);
+        updateStatus("Error al procesar: "+error.message);
+        alert("No se pudo completar el OCR. Comprueba tu conexión a Internet.");
+    }
+
+    btn.disabled=false;
+    busy=false;
+}
+
+function updateStatus(message){
+    document.getElementById("statusText").textContent=message;
+}
+
+function copyResults(){
+    const text=
+        "NRO. ORDEN: "+document.getElementById("orderResult").value+
+        "\nCÓDIGO: "+document.getElementById("codeResult").value;
+
+    navigator.clipboard.writeText(text)
+        .then(()=>alert("Resultados copiados."))
+        .catch(()=>alert("No se pudo copiar."));
+}
+
+function downloadResults(){
+    const text=
+        "NRO. ORDEN: "+document.getElementById("orderResult").value+
+        "\nCÓDIGO: "+document.getElementById("codeResult").value;
+
+    const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
+    const url=URL.createObjectURL(blob);
+    const a=document.createElement("a");
+
+    a.href=url;
+    a.download="datos_shalom.txt";
+    a.click();
+
+    URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
