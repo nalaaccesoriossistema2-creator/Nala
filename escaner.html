@@ -1,614 +1,1003 @@
-
 <!DOCTYPE html>
 <html lang="es">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Reconocedor Shalom - Orden y Código</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Escáner Guía Shalom - Orden y Código</title>
+  <script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+  <style>
+    :root {
+      --primary: #e60023;
+      --primary-dark: #b8001c;
+      --accent: #00e676;
+      --bg: #0f1115;
+      --surface: #1a1d24;
+      --surface-light: #252a34;
+      --text: #f3f4f6;
+      --text-muted: #9ca3af;
+      --border: #2e3440;
+    }
 
-<script src="https://cdn.jsdelivr.net/npm/tesseract.js@5/dist/tesseract.min.js"></script>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
 
-<style>
-*{box-sizing:border-box}
-body{
-    margin:0;
-    padding:20px;
-    background:#f1f3f5;
-    font-family:Arial,sans-serif;
-    color:#222;
-}
-.container{max-width:1200px;margin:auto}
-.panel{
-    background:white;
-    padding:20px;
-    border-radius:12px;
-    margin-bottom:18px;
-    box-shadow:0 2px 8px #0001;
-}
-h1{margin:0 0 5px}
-.subtitle{color:#777;margin-top:0}
-button{
-    border:0;
-    border-radius:7px;
-    padding:11px 15px;
-    background:#222;
-    color:white;
-    font-weight:bold;
-    cursor:pointer;
-}
-button:disabled{opacity:.5}
-.green{background:#16834a}
-.blue{background:#1769aa}
-.red{background:#b83232}
-input[type=file]{display:none}
-.upload{
-    display:block;
-    border:2px dashed #aaa;
-    border-radius:10px;
-    text-align:center;
-    padding:25px;
-    cursor:pointer;
-}
-.upload:hover{background:#fafafa}
-.toolbar{
-    display:flex;
-    gap:8px;
-    flex-wrap:wrap;
-    margin-top:14px;
-}
-.editor{
-    position:relative;
-    width:100%;
-    overflow:hidden;
-    background:#333;
-    border-radius:9px;
-    margin-top:15px;
-    touch-action:pan-y;
-    user-select:none;
-}
-.editor img{
-    display:block;
-    width:100%;
-    height:auto;
-    pointer-events:none;
-}
-.zone{
-    position:absolute;
-    border:3px solid;
-    cursor:move;
-    min-width:25px;
-    min-height:20px;
-    touch-action:none;
-}
-.zone.order{border-color:#1685ff;background:#1685ff22}
-.zone.code{border-color:#13a45b;background:#13a45b22}
-.zone-label{
-    position:absolute;
-    top:-25px;
-    left:-3px;
-    padding:4px 7px;
-    color:white;
-    font-size:12px;
-    font-weight:bold;
-    white-space:nowrap;
-    border-radius:4px 4px 0 0;
-}
-.order .zone-label{background:#1685ff}
-.code .zone-label{background:#13a45b}
-.handle{
-    position:absolute;
-    width:17px;
-    height:17px;
-    right:-8px;
-    bottom:-8px;
-    border:2px solid white;
-    border-radius:50%;
-    background:currentColor;
-    cursor:nwse-resize;
-}
-.order .handle{color:#1685ff}
-.code .handle{color:#13a45b}
-.zone.active{z-index:5}
-.zone.active{box-shadow:0 0 0 2px white}
-.result-grid{
-    display:grid;
-    grid-template-columns:1fr 1fr;
-    gap:12px;
-}
-.result{
-    padding:15px;
-    border:1px solid #ddd;
-    border-radius:9px;
-}
-.result h3{margin:0 0 10px}
-.result input{
-    width:100%;
-    padding:12px;
-    font-size:19px;
-    border:1px solid #ccc;
-    border-radius:6px;
-}
-.order-title{color:#1685ff}
-.code-title{color:#13a45b}
-.status{
-    margin-top:14px;
-    padding:12px;
-    background:#f4f4f4;
-    border-radius:7px;
-}
-.progress{
-    height:8px;
-    background:#ddd;
-    border-radius:10px;
-    overflow:hidden;
-    margin-top:8px;
-}
-.progress div{
-    height:100%;
-    width:0;
-    background:#16834a;
-}
-.raw{
-    background:#f4f4f4;
-    border-radius:7px;
-    padding:12px;
-    white-space:pre-wrap;
-    overflow-wrap:anywhere;
-    font-size:13px;
-}
-.hint{font-size:13px;color:#666;line-height:1.5}
-@media(max-width:650px){
-    body{padding:9px}
-    .panel{padding:13px}
-    .result-grid{grid-template-columns:1fr}
-}
-</style>
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      min-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    header {
+      width: 100%;
+      max-width: 600px;
+      padding: 14px 16px;
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 20;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-weight: 700;
+      font-size: 1.05rem;
+    }
+
+    .brand-badge {
+      background: var(--primary);
+      color: #fff;
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 0.78rem;
+      letter-spacing: 0.5px;
+    }
+
+    .status-pill {
+      font-size: 0.75rem;
+      padding: 4px 10px;
+      border-radius: 999px;
+      background: var(--surface-light);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .status-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #f59e0b;
+    }
+
+    .status-dot.ready {
+      background: var(--accent);
+      box-shadow: 0 0 8px var(--accent);
+    }
+
+    main {
+      width: 100%;
+      max-width: 600px;
+      padding: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+      flex: 1;
+    }
+
+    /* Visor de Cámara / Imagen */
+    .viewport-wrapper {
+      position: relative;
+      width: 100%;
+      aspect-ratio: 4 / 3;
+      background: #000;
+      border-radius: 14px;
+      overflow: hidden;
+      border: 1px solid var(--border);
+      box-shadow: 0 10px 25px rgba(0, 0, 0, 0.45);
+    }
+
+    #videoFeed, #uploadedImage {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    #uploadedImage {
+      display: none;
+    }
+
+    /* Capa oscura con 2 recortes transparentes */
+    .overlay-layer {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 5;
+    }
+
+    .guide-box {
+      position: absolute;
+      border: 2.5px solid var(--accent);
+      border-radius: 8px;
+      box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.52);
+      transition: top 0.1s ease, height 0.1s ease;
+    }
+
+    /* Evitar doble sombra superpuesta usando clip-path en el fondo oscuro */
+    .dark-mask {
+      position: absolute;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.58);
+      z-index: 4;
+      pointer-events: none;
+    }
+
+    .guide-box {
+      box-shadow: 0 0 12px rgba(0, 230, 118, 0.45);
+      z-index: 6;
+    }
+
+    .guide-box.code-box {
+      border-color: #38bdf8;
+      box-shadow: 0 0 12px rgba(56, 189, 248, 0.45);
+    }
+
+    .guide-label {
+      position: absolute;
+      top: -22px;
+      left: 0;
+      background: var(--accent);
+      color: #052e16;
+      font-size: 0.68rem;
+      font-weight: 800;
+      padding: 2px 7px;
+      border-radius: 4px;
+      white-space: nowrap;
+      letter-spacing: 0.3px;
+    }
+
+    .code-box .guide-label {
+      background: #38bdf8;
+      color: #082f49;
+    }
+
+    /* Esquinas decorativas */
+    .guide-box::after {
+      content: "";
+      position: absolute;
+      inset: 3px;
+      border: 1px dashed rgba(255, 255, 255, 0.45);
+      border-radius: 4px;
+    }
+
+    .helper-banner {
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(15, 17, 21, 0.85);
+      color: #fff;
+      font-size: 0.76rem;
+      padding: 5px 12px;
+      border-radius: 999px;
+      z-index: 7;
+      white-space: nowrap;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    /* Controles de ajuste */
+    .controls-bar {
+      background: var(--surface);
+      padding: 12px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .slider-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+    }
+
+    .slider-row input[type="range"] {
+      flex: 1;
+      accent-color: var(--primary);
+    }
+
+    .action-buttons {
+      display: grid;
+      grid-template-columns: 1fr auto auto;
+      gap: 8px;
+    }
+
+    button, .file-btn {
+      border: none;
+      border-radius: 10px;
+      padding: 12px 14px;
+      font-weight: 700;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform 0.1s ease, background 0.2s ease;
+    }
+
+    button:active, .file-btn:active {
+      transform: scale(0.97);
+    }
+
+    .btn-capture {
+      background: var(--primary);
+      color: #fff;
+      font-size: 0.95rem;
+    }
+
+    .btn-capture:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-capture:disabled {
+      opacity: 0.55;
+      cursor: not-allowed;
+    }
+
+    .btn-secondary {
+      background: var(--surface-light);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+
+    .btn-secondary.active {
+      background: #f59e0b;
+      color: #000;
+      border-color: #f59e0b;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    /* Vista previa de recortes binarizados */
+    .crops-preview {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 10px;
+      background: var(--surface);
+      padding: 10px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .crop-card {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .crop-card span {
+      font-size: 0.7rem;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+
+    .crop-card canvas {
+      width: 100%;
+      height: 44px;
+      background: #000;
+      border-radius: 6px;
+      border: 1px solid var(--border);
+      object-fit: contain;
+    }
+
+    /* Resultados */
+    .results-panel {
+      background: var(--surface);
+      padding: 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .result-grid {
+      display: grid;
+      grid-template-columns: 1.4fr 1fr;
+      gap: 10px;
+    }
+
+    .field-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+    }
+
+    .field-group label {
+      font-size: 0.75rem;
+      font-weight: 700;
+      color: var(--text-muted);
+      display: flex;
+      justify-content: space-between;
+    }
+
+    .input-copy-row {
+      display: flex;
+      gap: 6px;
+    }
+
+    .input-copy-row input {
+      width: 100%;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      color: #fff;
+      padding: 10px 12px;
+      border-radius: 8px;
+      font-size: 1.1rem;
+      font-weight: 800;
+      letter-spacing: 1px;
+      outline: none;
+    }
+
+    .input-copy-row input:focus {
+      border-color: var(--accent);
+    }
+
+    .input-copy-row input.valid {
+      border-color: var(--accent);
+    }
+
+    .btn-copy {
+      background: var(--surface-light);
+      color: var(--text);
+      padding: 0 12px;
+      border-radius: 8px;
+      border: 1px solid var(--border);
+      font-size: 0.8rem;
+    }
+
+    .btn-copy-both {
+      width: 100%;
+      background: #10b981;
+      color: #052e16;
+      padding: 10px;
+      font-size: 0.88rem;
+    }
+
+    /* Historial */
+    .history-section {
+      background: var(--surface);
+      padding: 12px 14px;
+      border-radius: 12px;
+      border: 1px solid var(--border);
+    }
+
+    .history-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+      font-size: 0.8rem;
+      color: var(--text-muted);
+      font-weight: 700;
+    }
+
+    .history-list {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      max-height: 160px;
+      overflow-y: auto;
+    }
+
+    .history-item {
+      background: var(--bg);
+      padding: 8px 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.85rem;
+      border: 1px solid var(--border);
+    }
+
+    .history-item strong {
+      color: var(--accent);
+      letter-spacing: 0.5px;
+    }
+
+    .history-item span.code-val {
+      color: #38bdf8;
+      font-weight: 700;
+      margin-left: 8px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: #111827;
+      color: #fff;
+      padding: 10px 18px;
+      border-radius: 999px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      border: 1px solid var(--accent);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+      transition: transform 0.25s ease;
+      z-index: 100;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
 </head>
-
 <body>
-<div class="container">
 
-<div class="panel">
-    <h1>📦 Reconocedor Shalom</h1>
-    <p class="subtitle">Primera etapa: N.º de orden y código.</p>
+  <header>
+    <div class="brand">
+      <span class="brand-badge">SHALOM</span>
+      <span>Lector de Guía</span>
+    </div>
+    <div class="status-pill">
+      <span class="status-dot" id="engineDot"></span>
+      <span id="engineStatus">Cargando OCR...</span>
+    </div>
+  </header>
 
-    <label class="upload" for="file">
-        <strong>📷 Seleccionar fotografía del ticket</strong>
-        <p>JPG, PNG o WEBP</p>
-    </label>
-    <input type="file" id="file" accept="image/*">
+  <main>
+    <!-- Visor con 2 rectángulos guía -->
+    <div class="viewport-wrapper" id="viewport">
+      <video id="videoFeed" autoplay playsinline muted></video>
+      <img id="uploadedImage" alt="Guía subida" />
+      <div class="dark-mask" id="darkMask"></div>
 
-    <div class="toolbar">
-        <button class="blue" onclick="selectZone('order')">Seleccionar orden</button>
-        <button class="green" onclick="selectZone('code')">Seleccionar código</button>
-        <button onclick="resetZones()">Restablecer rectángulos</button>
+      <div class="overlay-layer" id="overlayLayer">
+        <!-- Rectángulo 1: NRO. ORDEN -->
+        <div class="guide-box order-box" id="boxOrder">
+          <div class="guide-label">NRO. ORDEN (9 dígitos)</div>
+        </div>
+
+        <!-- Rectángulo 2: CÓDIGO -->
+        <div class="guide-box code-box" id="boxCode">
+          <div class="guide-label">CÓDIGO (4 car.)</div>
+        </div>
+      </div>
+
+      <div class="helper-banner" id="helperText">
+        Encuadra solo los números y el código dentro de los recuadros
+      </div>
     </div>
 
-    <p class="hint">
-        Selecciona una zona y dibuja un rectángulo arrastrando sobre la imagen.
-        También puedes moverlo arrastrando su interior o cambiar su tamaño
-        desde el círculo de la esquina inferior derecha.
-    </p>
-
-    <div id="editor" class="editor" style="display:none">
-        <img id="ticketImage" alt="Ticket Shalom">
-        <div id="orderZone" class="zone order" data-type="order">
-            <span class="zone-label">N.º DE ORDEN</span>
-            <span class="handle"></span>
-        </div>
-        <div id="codeZone" class="zone code" data-type="code">
-            <span class="zone-label">CÓDIGO</span>
-            <span class="handle"></span>
-        </div>
-    </div>
-
-    <div class="toolbar">
-        <button class="green" id="readBtn" onclick="recognizeZones()">
-            🔍 Reconocer orden y código
+    <!-- Controles de posición y captura -->
+    <div class="controls-bar">
+      <div class="slider-row">
+        <span>Posición vertical:</span>
+        <input type="range" id="verticalSlider" min="15" max="75" value="44" />
+        <button type="button" class="btn-secondary" id="btnResetCam" style="padding: 5px 10px; font-size: 0.75rem; display: none;">
+          Volver a cámara
         </button>
-        <button class="blue" onclick="saveTemplate()">
-            Guardar plantilla
+      </div>
+
+      <div class="action-buttons">
+        <button type="button" class="btn-capture" id="btnScan" disabled>
+          📷 Escanear Recuadros
         </button>
-        <button onclick="loadTemplate()">
-            Cargar plantilla
+        <button type="button" class="btn-secondary" id="btnTorch" title="Linterna" style="display: none;">
+          🔦
         </button>
+        <label class="file-btn btn-secondary" title="Subir foto de galería">
+          🖼️ Foto
+          <input type="file" id="fileInput" accept="image/*" />
+        </label>
+      </div>
     </div>
 
-    <div class="status">
-        <div id="statusText">Esperando fotografía...</div>
-        <div class="progress"><div id="progressBar"></div></div>
+    <!-- Vista previa de lo que lee el OCR -->
+    <div class="crops-preview">
+      <div class="crop-card">
+        <span>Recorte Orden (Procesado)</span>
+        <canvas id="canvasOrder" width="320" height="70"></canvas>
+      </div>
+      <div class="crop-card">
+        <span>Recorte Código (Procesado)</span>
+        <canvas id="canvasCode" width="200" height="70"></canvas>
+      </div>
     </div>
-</div>
 
-<div class="panel">
-    <h2>Resultados del reconocimiento</h2>
-
-    <div class="result-grid">
-        <div class="result">
-            <h3 class="order-title">N.º DE ORDEN</h3>
-            <input id="orderResult" placeholder="Número reconocido">
+    <!-- Resultados extraídos -->
+    <div class="results-panel">
+      <div class="result-grid">
+        <div class="field-group">
+          <label for="inputOrder">
+            <span>NRO. DE ORDEN</span>
+            <span id="orderMatchTag"></span>
+          </label>
+          <div class="input-copy-row">
+            <input type="text" id="inputOrder" placeholder="Ej: 103622723" maxlength="12" />
+            <button type="button" class="btn-copy" onclick="copyText('inputOrder')">📋</button>
+          </div>
         </div>
 
-        <div class="result">
-            <h3 class="code-title">CÓDIGO</h3>
-            <input id="codeResult" placeholder="Código reconocido">
+        <div class="field-group">
+          <label for="inputCode">
+            <span>CÓDIGO</span>
+            <span id="codeMatchTag"></span>
+          </label>
+          <div class="input-copy-row">
+            <input type="text" id="inputCode" placeholder="Ej: 3M7N" maxlength="6" />
+            <button type="button" class="btn-copy" onclick="copyText('inputCode')">📋</button>
+          </div>
         </div>
+      </div>
+
+      <button type="button" class="btn-copy-both" id="btnCopyBoth">
+        ✅ Copiar Orden + Código y Guardar
+      </button>
     </div>
 
-    <div class="toolbar">
-        <button class="green" onclick="copyResults()">Copiar resultados</button>
-        <button class="blue" onclick="downloadResults()">Descargar TXT</button>
+    <!-- Historial de escaneos -->
+    <div class="history-section">
+      <div class="history-header">
+        <span>HISTORIAL DE ESTA SESIÓN</span>
+        <button type="button" id="btnClearHistory" style="background:none; color:#ef4444; padding:0; font-size:0.75rem;">Limpiar</button>
+      </div>
+      <div class="history-list" id="historyList">
+        <div style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 10px;">
+          Aún no hay guías escaneadas.
+        </div>
+      </div>
     </div>
-</div>
+  </main>
 
-<div class="panel">
-    <h2>Texto detectado por cada rectángulo</h2>
+  <div class="toast" id="toast">Copiado al portapapeles</div>
 
-    <h3 class="order-title">N.º de orden</h3>
-    <pre id="orderRaw" class="raw">Sin procesar.</pre>
+  <script>
+    // Elementos del DOM
+    const video = document.getElementById('videoFeed');
+    const uploadedImg = document.getElementById('uploadedImage');
+    const viewport = document.getElementById('viewport');
+    const darkMask = document.getElementById('darkMask');
+    const boxOrder = document.getElementById('boxOrder');
+    const boxCode = document.getElementById('boxCode');
+    const verticalSlider = document.getElementById('verticalSlider');
+    const btnScan = document.getElementById('btnScan');
+    const btnTorch = document.getElementById('btnTorch');
+    const btnResetCam = document.getElementById('btnResetCam');
+    const fileInput = document.getElementById('fileInput');
+    const canvasOrder = document.getElementById('canvasOrder');
+    const canvasCode = document.getElementById('canvasCode');
+    const inputOrder = document.getElementById('inputOrder');
+    const inputCode = document.getElementById('inputCode');
+    const engineDot = document.getElementById('engineDot');
+    const engineStatus = document.getElementById('engineStatus');
+    const helperText = document.getElementById('helperText');
+    const historyList = document.getElementById('historyList');
 
-    <h3 class="code-title">Código</h3>
-    <pre id="codeRaw" class="raw">Sin procesar.</pre>
-</div>
+    let workerOrder = null;
+    let workerCode = null;
+    let videoTrack = null;
+    let torchOn = false;
+    let isUsingUploadedImage = false;
+    let scanHistory = [];
 
-</div>
-
-<script>
-const fileInput = document.getElementById("file");
-const editor = document.getElementById("editor");
-const image = document.getElementById("ticketImage");
-
-const orderZone = document.getElementById("orderZone");
-const codeZone = document.getElementById("codeZone");
-
-let currentFile = null;
-let activeZone = "order";
-let drawing = false;
-let dragMode = null;
-let startX = 0;
-let startY = 0;
-let originalRect = null;
-let currentRect = null;
-let worker = null;
-let busy = false;
-
-const zones = {
-    order:orderZone,
-    code:codeZone
-};
-
-// Cargar fotografía
-fileInput.addEventListener("change",e=>{
-    const file = e.target.files[0];
-    if(!file) return;
-
-    if(currentFile) URL.revokeObjectURL(image.src);
-
-    currentFile = file;
-    image.onload = ()=>{
-        editor.style.display = "block";
-        loadTemplate(false);
-        updateStatus("Fotografía cargada. Ajusta los rectángulos.");
-    };
-    image.src = URL.createObjectURL(file);
-});
-
-// Cambiar zona seleccionada
-function selectZone(type){
-    activeZone = type;
-    updateZoneStyles();
-    updateStatus(type === "order"
-        ? "Dibuja o ajusta el rectángulo del N.º de orden."
-        : "Dibuja o ajusta el rectángulo del código."
-    );
-}
-
-function updateZoneStyles(){
-    Object.entries(zones).forEach(([type,el])=>{
-        el.classList.toggle("active",type === activeZone);
-    });
-}
-
-// Coordenadas relativas a la imagen
-function pointerPosition(e){
-    const rect = editor.getBoundingClientRect();
-    return {
-        x:Math.max(0,Math.min(100,(e.clientX-rect.left)/rect.width*100)),
-        y:Math.max(0,Math.min(100,(e.clientY-rect.top)/rect.height*100))
-    };
-}
-
-function setRect(el,r){
-    el.style.left = r.x+"%";
-    el.style.top = r.y+"%";
-    el.style.width = r.w+"%";
-    el.style.height = r.h+"%";
-}
-
-function getRect(el){
-    return {
-        x:parseFloat(el.style.left)||0,
-        y:parseFloat(el.style.top)||0,
-        w:parseFloat(el.style.width)||20,
-        h:parseFloat(el.style.height)||10
-    };
-}
-
-function clampRect(r){
-    r.w=Math.max(2,Math.min(r.w,100-r.x));
-    r.h=Math.max(2,Math.min(r.h,100-r.y));
-    r.x=Math.max(0,Math.min(r.x,100-r.w));
-    r.y=Math.max(0,Math.min(r.y,100-r.h));
-    return r;
-}
-
-// Dibujar, mover y redimensionar
-editor.addEventListener("pointerdown",e=>{
-    if(!currentFile || busy) return;
-    if(e.target.closest(".zone")) return;
-
-    const p=pointerPosition(e);
-    drawing=true;
-    dragMode="draw";
-    startX=p.x;
-    startY=p.y;
-    currentRect={x:p.x,y:p.y,w:0,h:0};
-
-    setRect(zones[activeZone],currentRect);
-    zones[activeZone].style.display="block";
-    editor.setPointerCapture(e.pointerId);
-});
-
-Object.values(zones).forEach(el=>{
-    el.addEventListener("pointerdown",e=>{
-        if(busy) return;
-
-        const type=el.dataset.type;
-        activeZone=type;
-        updateZoneStyles();
-
-        const p=pointerPosition(e);
-        startX=p.x;
-        startY=p.y;
-        originalRect=getRect(el);
-
-        dragMode=e.target.classList.contains("handle")
-            ? "resize":"move";
-
-        drawing=true;
-        editor.setPointerCapture(e.pointerId);
-        e.stopPropagation();
-    });
-});
-
-editor.addEventListener("pointermove",e=>{
-    if(!drawing || !dragMode) return;
-
-    const p=pointerPosition(e);
-    const el=zones[activeZone];
-    let r;
-
-    if(dragMode==="draw"){
-        r={
-            x:Math.min(startX,p.x),
-            y:Math.min(startY,p.y),
-            w:Math.abs(p.x-startX),
-            h:Math.abs(p.y-startY)
-        };
-    }
-
-    if(dragMode==="move"){
-        const dx=p.x-startX;
-        const dy=p.y-startY;
-        r={
-            ...originalRect,
-            x:originalRect.x+dx,
-            y:originalRect.y+dy
-        };
-    }
-
-    if(dragMode==="resize"){
-        r={
-            ...originalRect,
-            w:originalRect.w+(p.x-startX),
-            h:originalRect.h+(p.y-startY)
-        };
-    }
-
-    setRect(el,clampRect(r));
-});
-
-editor.addEventListener("pointerup",()=>{
-    drawing=false;
-    dragMode=null;
-});
-
-editor.addEventListener("pointercancel",()=>{
-    drawing=false;
-    dragMode=null;
-});
-
-// Plantilla reutilizable
-function saveTemplate(){
-    if(!currentFile){
-        alert("Primero carga una imagen.");
-        return;
-    }
-
-    const template={
-        order:getRect(orderZone),
-        code:getRect(codeZone)
+    // Posiciones porcentuales de los 2 rectángulos dentro del visor
+    const layout = {
+      topPct: 44,
+      heightPct: 14,
+      orderLeftPct: 7,
+      orderWidthPct: 50,
+      codeLeftPct: 62,
+      codeWidthPct: 31
     };
 
-    localStorage.setItem("shalomTemplate",JSON.stringify(template));
-    updateStatus("Plantilla guardada en este navegador.");
-}
+    // Actualiza la posición visual de los 2 rectángulos y el recorte de la máscara oscura
+    function updateGuideBoxes() {
+      layout.topPct = Number(verticalSlider.value);
 
-function loadTemplate(showMessage=true){
-    const saved=localStorage.getItem("shalomTemplate");
+      boxOrder.style.top = `${layout.topPct}%`;
+      boxOrder.style.left = `${layout.orderLeftPct}%`;
+      boxOrder.style.width = `${layout.orderWidthPct}%`;
+      boxOrder.style.height = `${layout.heightPct}%`;
 
-    if(saved){
-        try{
-            const template=JSON.parse(saved);
-            setRect(orderZone,template.order);
-            setRect(codeZone,template.code);
-            if(showMessage) updateStatus("Plantilla cargada.");
-        }catch(e){
-            defaultZones();
-        }
-    }else{
-        defaultZones();
-        if(showMessage) updateStatus("No hay plantilla guardada. Ajusta los rectángulos.");
+      boxCode.style.top = `${layout.topPct}%`;
+      boxCode.style.left = `${layout.codeLeftPct}%`;
+      boxCode.style.width = `${layout.codeWidthPct}%`;
+      boxCode.style.height = `${layout.heightPct}%`;
+
+      // Crear "agujeros" transparentes exactos en la máscara oscura usando clip-path polygon
+      const t = layout.topPct;
+      const b = layout.topPct + layout.heightPct;
+      const oL = layout.orderLeftPct;
+      const oR = layout.orderLeftPct + layout.orderWidthPct;
+      const cL = layout.codeLeftPct;
+      const cR = layout.codeLeftPct + layout.codeWidthPct;
+
+      darkMask.style.clipPath = `polygon(
+        0% 0%, 100% 0%, 100% 100%, 0% 100%, 0% 0%,
+        ${oL}% ${t}%, ${oL}% ${b}%, ${oR}% ${b}%, ${oR}% ${t}%, ${oL}% ${t}%,
+        ${cL}% ${t}%, ${cL}% ${b}%, ${cR}% ${b}%, ${cR}% ${t}%, ${cL}% ${t}%,
+        0% 0%
+      )`;
     }
-}
 
-function defaultZones(){
-    setRect(orderZone,{x:10,y:12,w:45,h:9});
-    setRect(codeZone,{x:10,y:23,w:45,h:9});
-}
+    verticalSlider.addEventListener('input', updateGuideBoxes);
+    updateGuideBoxes();
 
-function resetZones(){
-    if(!currentFile) return;
-    defaultZones();
-    updateStatus("Rectángulos restablecidos. Acomódalos sobre los datos.");
-}
-
-// Recortar zona en resolución original
-function cropZone(el){
-    const r=getRect(el);
-
-    const canvas=document.createElement("canvas");
-    const ctx=canvas.getContext("2d");
-
-    const sx=Math.round(image.naturalWidth*r.x/100);
-    const sy=Math.round(image.naturalHeight*r.y/100);
-    const sw=Math.round(image.naturalWidth*r.w/100);
-    const sh=Math.round(image.naturalHeight*r.h/100);
-
-    // Aumentar tamaño para ayudar al OCR
-    const scale=3;
-
-    canvas.width=Math.max(1,sw*scale);
-    canvas.height=Math.max(1,sh*scale);
-
-    ctx.imageSmoothingEnabled=false;
-    ctx.drawImage(
-        image,
-        sx,sy,sw,sh,
-        0,0,canvas.width,canvas.height
-    );
-
-    return canvas;
-}
-
-function cleanDigits(text){
-    return (text||"")
-        .replace(/[Oo]/g,"0")
-        .replace(/[Il|]/g,"1")
-        .replace(/[^0-9]/g,"");
-}
-
-function cleanCode(text){
-    return (text||"")
-        .toUpperCase()
-        .replace(/[^A-Z0-9-]/g,"");
-}
-
-async function getWorker(){
-    if(!worker){
-        worker=await Tesseract.createWorker("spa",1,{
-            logger:info=>{
-                if(info.status==="recognizing text"){
-                    document.getElementById("statusText").textContent=
-                        "Reconociendo texto...";
-                }
-            }
+    // Inicializar cámara trasera
+    async function initCamera() {
+      try {
+        const stream = await navigator.mediaDevices.getUserMedia({
+          video: {
+            facingMode: { ideal: 'environment' },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 }
+          },
+          audio: false
         });
-    }
-    return worker;
-}
+        video.srcObject = stream;
+        videoTrack = stream.getVideoTracks()[0];
 
-async function recognizeZones(){
-    if(!currentFile){
-        alert("Primero carga una fotografía.");
+        // Verificar si soporta flash/linterna
+        const capabilities = videoTrack.getCapabilities ? videoTrack.getCapabilities() : {};
+        if (capabilities.torch) {
+          btnTorch.style.display = 'inline-flex';
+        }
+      } catch (err) {
+        console.warn('No se pudo acceder a la cámara:', err);
+        helperText.textContent = 'Cámara no disponible. Usa el botón "🖼️ Foto" para probar.';
+      }
+    }
+
+    // Encender / apagar linterna
+    btnTorch.addEventListener('click', async () => {
+      if (!videoTrack) return;
+      try {
+        torchOn = !torchOn;
+        await videoTrack.applyConstraints({ advanced: [{ torch: torchOn }] });
+        btnTorch.classList.toggle('active', torchOn);
+      } catch (e) {
+        showToast('No se pudo activar la linterna');
+      }
+    });
+
+    // Subir imagen manual
+    fileInput.addEventListener('change', (e) => {
+      const file = e.target.files[0];
+      if (!file) return;
+      const url = URL.createObjectURL(file);
+      uploadedImg.onload = () => {
+        isUsingUploadedImage = true;
+        uploadedImg.style.display = 'block';
+        video.style.display = 'none';
+        btnResetCam.style.display = 'inline-flex';
+        helperText.textContent = 'Mueve la barra vertical para alinear los 2 recuadros y pulsa Escanear';
+      };
+      uploadedImg.src = url;
+    });
+
+    btnResetCam.addEventListener('click', () => {
+      isUsingUploadedImage = false;
+      uploadedImg.style.display = 'none';
+      video.style.display = 'block';
+      btnResetCam.style.display = 'none';
+      fileInput.value = '';
+      helperText.textContent = 'Encuadra solo los números y el código dentro de los recuadros';
+    });
+
+    // Inicializar motores OCR Tesseract
+    async function initOCR() {
+      try {
+        workerOrder = await Tesseract.createWorker('eng');
+        await workerOrder.setParameters({
+          tessedit_char_whitelist: '0123456789',
+          tessedit_pageseg_mode: Tesseract.PSM.SINGLE_LINE
+        });
+
+        workerCode = await Tesseract.createWorker('eng');
+        await workerCode.setParameters({
+          tessedit_char_whitelist: 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+          tessedit_pageseg_mode: Tesseract.PSM.SINGLE_LINE
+        });
+
+        engineDot.classList.add('ready');
+        engineStatus.textContent = 'OCR Listo';
+        btnScan.disabled = false;
+      } catch (err) {
+        console.error('Error iniciando Tesseract:', err);
+        engineStatus.textContent = 'Error OCR';
+      }
+    }
+
+    // Calcula el mapeo exacto de object-fit: cover entre el visor y la fuente (video o imagen)
+    function extractBoxToCanvas(sourceEl, srcW, srcH, boxRectPct, targetCanvas) {
+      const viewRect = viewport.getBoundingClientRect();
+      const viewW = viewRect.width;
+      const viewH = viewRect.height;
+
+      const srcRatio = srcW / srcH;
+      const viewRatio = viewW / viewH;
+
+      let renderW, renderH, offsetX, offsetY;
+      if (srcRatio > viewRatio) {
+        renderH = viewH;
+        renderW = viewH * srcRatio;
+        offsetX = (renderW - viewW) / 2;
+        offsetY = 0;
+      } else {
+        renderW = viewW;
+        renderH = viewW / srcRatio;
+        offsetX = 0;
+        offsetY = (renderH - viewH) / 2;
+      }
+
+      const scaleX = srcW / renderW;
+      const scaleY = srcH / renderH;
+
+      const boxXView = (boxRectPct.left / 100) * viewW;
+      const boxYView = (boxRectPct.top / 100) * viewH;
+      const boxWView = (boxRectPct.width / 100) * viewW;
+      const boxHView = (boxRectPct.height / 100) * viewH;
+
+      const sx = Math.max(0, (boxXView + offsetX) * scaleX);
+      const sy = Math.max(0, (boxYView + offsetY) * scaleY);
+      const sw = Math.min(srcW - sx, boxWView * scaleX);
+      const sh = Math.min(srcH - sy, boxHView * scaleY);
+
+      // Escalar a una altura óptima de 90px para lectura nítida de Tesseract + margen blanco
+      const pad = 14;
+      const outH = 90;
+      const outW = Math.max(120, Math.round((sw / sh) * outH));
+
+      targetCanvas.width = outW + pad * 2;
+      targetCanvas.height = outH + pad * 2;
+
+      const ctx = targetCanvas.getContext('2d');
+      ctx.fillStyle = '#ffffff';
+      ctx.fillRect(0, 0, targetCanvas.width, targetCanvas.height);
+      ctx.drawImage(sourceEl, sx, sy, sw, sh, pad, pad, outW, outH);
+
+      preprocessThermalReceipt(ctx, targetCanvas.width, targetCanvas.height);
+    }
+
+    // Preprocesamiento: Escala de grises + estiramiento de contraste + umbralización adaptativa
+    function preprocessThermalReceipt(ctx, w, h) {
+      const imgData = ctx.getImageData(0, 0, w, h);
+      const data = imgData.data;
+      const gray = new Uint8ClampedArray(w * h);
+
+      let min = 255, max = 0;
+      for (let i = 0; i < gray.length; i++) {
+        const idx = i * 4;
+        const lum = Math.round(0.299 * data[idx] + 0.587 * data[idx + 1] + 0.114 * data[idx + 2]);
+        gray[i] = lum;
+        if (lum < min) min = lum;
+        if (lum > max) max = lum;
+      }
+
+      const range = Math.max(1, max - min);
+      for (let i = 0; i < gray.length; i++) {
+        gray[i] = Math.round(((gray[i] - min) / range) * 255);
+      }
+
+      // Umbralización local por bloques para compensar sombras en papel térmico
+      const radius = 12;
+      for (let y = 0; y < h; y++) {
+        for (let x = 0; x < w; x++) {
+          let sum = 0, count = 0;
+          for (let dy = -radius; dy <= radius; dy += 4) {
+            const ny = y + dy;
+            if (ny < 0 || ny >= h) continue;
+            for (let dx = -radius; dx <= radius; dx += 4) {
+              const nx = x + dx;
+              if (nx < 0 || nx >= w) continue;
+              sum += gray[ny * w + nx];
+              count++;
+            }
+          }
+          const localMean = sum / count;
+          const val = gray[y * w + x] < (localMean - 14) ? 0 : 255;
+          const idx = (y * w + x) * 4;
+          data[idx] = val;
+          data[idx + 1] = val;
+          data[idx + 2] = val;
+          data[idx + 3] = 255;
+        }
+      }
+
+      ctx.putImageData(imgData, 0, 0);
+    }
+
+    // Ejecutar escaneo de ambos recuadros
+    btnScan.addEventListener('click', async () => {
+      if (!workerOrder || !workerCode) return;
+
+      let sourceEl, srcW, srcH;
+      if (isUsingUploadedImage && uploadedImg.naturalWidth > 0) {
+        sourceEl = uploadedImg;
+        srcW = uploadedImg.naturalWidth;
+        srcH = uploadedImg.naturalHeight;
+      } else if (video.videoWidth > 0) {
+        sourceEl = video;
+        srcW = video.videoWidth;
+        srcH = video.videoHeight;
+      } else {
+        showToast('Esperando imagen de cámara...');
         return;
+      }
+
+      btnScan.disabled = true;
+      btnScan.textContent = '⏳ Leyendo...';
+
+      try {
+        extractBoxToCanvas(sourceEl, srcW, srcH, {
+          top: layout.topPct,
+          left: layout.orderLeftPct,
+          width: layout.orderWidthPct,
+          height: layout.heightPct
+        }, canvasOrder);
+
+        extractBoxToCanvas(sourceEl, srcW, srcH, {
+          top: layout.topPct,
+          left: layout.codeLeftPct,
+          width: layout.codeWidthPct,
+          height: layout.heightPct
+        }, canvasCode);
+
+        const [resOrder, resCode] = await Promise.all([
+          workerOrder.recognize(canvasOrder),
+          workerCode.recognize(canvasCode)
+        ]);
+
+        // Limpiar y extraer formato esperado de Shalom
+        const rawOrderDigits = resOrder.data.text.replace(/\D/g, '');
+        const match9Digits = rawOrderDigits.match(/\d{8,10}/);
+        const cleanOrder = match9Digits ? match9Digits[0] : rawOrderDigits;
+
+        const rawCodeChars = resCode.data.text.replace(/[^A-Z0-9]/gi, '').toUpperCase();
+        const match4Code = rawCodeChars.match(/[A-Z0-9]{4}/);
+        const cleanCode = match4Code ? match4Code[0] : rawCodeChars;
+
+        inputOrder.value = cleanOrder;
+        inputCode.value = cleanCode;
+
+        validateInputs();
+
+        if (cleanOrder || cleanCode) {
+          if (navigator.vibrate) navigator.vibrate(60);
+          showToast('Datos extraídos');
+        } else {
+          showToast('No se detectó texto claro, acerca o alinea mejor');
+        }
+      } catch (err) {
+        console.error(err);
+        showToast('Error al procesar la imagen');
+      } finally {
+        btnScan.disabled = false;
+        btnScan.textContent = '📷 Escanear Recuadros';
+      }
+    });
+
+    function validateInputs() {
+      const orderVal = inputOrder.value.trim();
+      const codeVal = inputCode.value.trim();
+
+      const orderTag = document.getElementById('orderMatchTag');
+      const codeTag = document.getElementById('codeMatchTag');
+
+      if (/^\d{8,10}$/.test(orderVal)) {
+        inputOrder.classList.add('valid');
+        orderTag.textContent = '✓ Válido';
+        orderTag.style.color = '#00e676';
+      } else {
+        inputOrder.classList.remove('valid');
+        orderTag.textContent = orderVal ? 'Revisar' : '';
+        orderTag.style.color = '#f59e0b';
+      }
+
+      if (/^[A-Z0-9]{4}$/i.test(codeVal)) {
+        inputCode.classList.add('valid');
+        codeTag.textContent = '✓ Válido';
+        codeTag.style.color = '#38bdf8';
+      } else {
+        inputCode.classList.remove('valid');
+        codeTag.textContent = codeVal ? 'Revisar' : '';
+        codeTag.style.color = '#f59e0b';
+      }
     }
 
-    if(busy) return;
-    busy=true;
+    inputOrder.addEventListener('input', validateInputs);
+    inputCode.addEventListener('input', () => {
+      inputCode.value = inputCode.value.toUpperCase();
+      validateInputs();
+    });
 
-    const btn=document.getElementById("readBtn");
-    btn.disabled=true;
-
-    try{
-        updateStatus("Preparando OCR...");
-        const ocr=await getWorker();
-
-        // OCR independiente para orden
-        updateStatus("Leyendo N.º de orden...");
-        const orderCrop=cropZone(orderZone);
-        const orderResult=await ocr.recognize(orderCrop);
-        const orderText=orderResult.data.text.trim();
-
-        // OCR independiente para código
-        updateStatus("Leyendo código...");
-        const codeCrop=cropZone(codeZone);
-        const codeResult=await ocr.recognize(codeCrop);
-        const codeText=codeResult.data.text.trim();
-
-        document.getElementById("orderRaw").textContent=
-            orderText || "No se reconoció texto.";
-
-        document.getElementById("codeRaw").textContent=
-            codeText || "No se reconoció texto.";
-
-        const order=cleanDigits(orderText);
-        const code=cleanCode(codeText);
-
-        document.getElementById("orderResult").value=order;
-        document.getElementById("codeResult").value=code;
-
-        updateStatus("Reconocimiento terminado. Revisa los resultados.");
-
-    }catch(error){
-        console.error(error);
-        updateStatus("Error al procesar: "+error.message);
-        alert("No se pudo completar el OCR. Comprueba tu conexión a Internet.");
+    function copyText(inputId) {
+      const val = document.getElementById(inputId).value.trim();
+      if (!val) return;
+      navigator.clipboard.writeText(val);
+      showToast(`Copiado: ${val}`);
     }
 
-    btn.disabled=false;
-    busy=false;
-}
+    document.getElementById('btnCopyBoth').addEventListener('click', () => {
+      const orderVal = inputOrder.value.trim();
+      const codeVal = inputCode.value.trim().toUpperCase();
+      if (!orderVal && !codeVal) {
+        showToast('No hay datos para copiar');
+        return;
+      }
 
-function updateStatus(message){
-    document.getElementById("statusText").textContent=message;
-}
+      const formatted = `Orden: ${orderVal} | Código: ${codeVal}`;
+      navigator.clipboard.writeText(formatted);
+      showToast('Copiado y guardado en historial');
 
-function copyResults(){
-    const text=
-        "NRO. ORDEN: "+document.getElementById("orderResult").value+
-        "\nCÓDIGO: "+document.getElementById("codeResult").value;
+      // Agregar al historial si no está duplicado inmediatamente
+      if (!scanHistory.some(item => item.order === orderVal && item.code === codeVal)) {
+        scanHistory.unshift({
+          order: orderVal || '---',
+          code: codeVal || '---',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        });
+        renderHistory();
+      }
+    });
 
-    navigator.clipboard.writeText(text)
-        .then(()=>alert("Resultados copiados."))
-        .catch(()=>alert("No se pudo copiar."));
-}
+    document.getElementById('btnClearHistory').addEventListener('click', () => {
+      scanHistory = [];
+      renderHistory();
+    });
 
-function downloadResults(){
-    const text=
-        "NRO. ORDEN: "+document.getElementById("orderResult").value+
-        "\nCÓDIGO: "+document.getElementById("codeResult").value;
+    function renderHistory() {
+      if (scanHistory.length === 0) {
+        historyList.innerHTML = `<div style="color: var(--text-muted); font-size: 0.8rem; text-align: center; padding: 10px;">Aún no hay guías escaneadas.</div>`;
+        return;
+      }
+      historyList.innerHTML = scanHistory.map(item => `
+        <div class="history-item">
+          <div>
+            <strong>${item.order}</strong>
+            <span class="code-val">${item.code}</span>
+          </div>
+          <span style="color: var(--text-muted); font-size: 0.75rem;">${item.time}</span>
+        </div>
+      `).join('');
+    }
 
-    const blob=new Blob([text],{type:"text/plain;charset=utf-8"});
-    const url=URL.createObjectURL(blob);
-    const a=document.createElement("a");
+    function showToast(msg) {
+      const toast = document.getElementById('toast');
+      toast.textContent = msg;
+      toast.classList.add('show');
+      setTimeout(() => toast.classList.remove('show'), 2200);
+    }
 
-    a.href=url;
-    a.download="datos_shalom.txt";
-    a.click();
-
-    URL.revokeObjectURL(url);
-}
-</script>
+    // Arrancar cámara y motor OCR
+    initCamera();
+    initOCR();
+  </script>
 </body>
 </html>
